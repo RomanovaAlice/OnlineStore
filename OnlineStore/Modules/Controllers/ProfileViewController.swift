@@ -1,13 +1,13 @@
 //
-//  CartViewController.swift
+//  ProfileViewController.swift
 //  OnlineStore
 //
-//  Created by Алиса Романова on 07.12.2022.
+//  Created by Алиса Романова on 10.12.2022.
 //
 
 import UIKit
 
-class CartViewController: UIViewController {
+class ProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

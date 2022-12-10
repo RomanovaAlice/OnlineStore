@@ -8,12 +8,20 @@
 import Foundation
 
 struct Store: Decodable, Hashable {
-    
+
     let home_store: [HomeStore]
     let best_seller: [BestSeller]
+    
+    static func == (lhs: Store, rhs: Store) -> Bool {
+        return lhs.home_store[0].id == rhs.home_store[0].id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(home_store[0].id)
+    }
 }
 
-struct HomeStore: Decodable {
+struct HomeStore: Decodable, Hashable {
     let id: Int
     let is_new: Bool?
     let title: String
@@ -22,7 +30,7 @@ struct HomeStore: Decodable {
     let is_buy: Bool
 }
 
-struct BestSeller: Decodable {
+struct BestSeller: Decodable, Hashable {
     let id: Int
     let is_favorites: Bool
     let title: String
