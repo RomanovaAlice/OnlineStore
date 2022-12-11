@@ -11,7 +11,7 @@ class SelectCategoryCell: UICollectionViewCell {
     
     //MARK: - Properties
     
-    let circleView = UIView(backgroundColor: UIColor(named: "white")!, radius: 35)
+    let circleView = UIView(backgroundColor: UIColor(named: "white"), radius: 35)
     let imageView = UIImageView(tintColor: .systemGray3)
     let titleLabel = UILabel(font: .systemFont(ofSize: 13, weight: .medium))
     
@@ -28,22 +28,6 @@ class SelectCategoryCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //MARK: - isSelected
-    
-    override var isSelected: Bool {
-        didSet {
-            updateSelectedState()
-        }
-    }
-    
-    //MARK: - prepareForReuse
-    
-    override func prepareForReuse() {
-        circleView.backgroundColor = nil
-        imageView.tintColor = nil
-        titleLabel.textColor = nil
-    }
-    
     //MARK: - Methods
     
     private func setShadows() {
@@ -53,10 +37,16 @@ class SelectCategoryCell: UICollectionViewCell {
         circleView.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
     }
     
-    private func updateSelectedState() {
-        circleView.backgroundColor = isSelected ? UIColor(named: "orange") : UIColor(named: "white")
-        imageView.tintColor = isSelected ? .white : .systemGray3
-        titleLabel.textColor = isSelected ? UIColor(named: "orange") : .black
+    func setSelectedState() {
+        circleView.backgroundColor = UIColor(named: "orange")
+        imageView.tintColor = .white
+        titleLabel.textColor = UIColor(named: "orange")
+    }
+    
+    func setUnselectedState() {
+        circleView.backgroundColor = UIColor(named: "white")
+        imageView.tintColor = .systemGray3
+        titleLabel.textColor = .black
     }
 }
 

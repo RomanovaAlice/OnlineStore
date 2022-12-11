@@ -12,7 +12,7 @@ final class StoreTabBarController: UITabBarController {
     //MARK: - Properties
     
     //viewControllers
-    let storeViewController = StoreViewController()
+    let storeViewController = UINavigationController(rootViewController: StoreViewController())
     let favoritesViewController = FavoritesVeiwController()
     let profileViewController = ProfileViewController()
     let cartViewController = CartViewController()

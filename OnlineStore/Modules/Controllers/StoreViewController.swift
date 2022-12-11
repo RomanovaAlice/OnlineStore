@@ -22,7 +22,7 @@ final class StoreViewController: UIViewController {
             switch self {
 
             case .selectCategory:
-                return "Select category"
+                return " Select category"
             case .search:
                 return ""
             case .hotSales:
@@ -52,25 +52,25 @@ final class StoreViewController: UIViewController {
     private var cancelable: Set<AnyCancellable> = []
     private var storeCollectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
+    private lazy var filterButton = UIBarButtonItem(image: UIImage(named: "funnel"), style: .plain, target: self, action: #selector(presentFilterViewController))
     
     private let heartImage = CurrentValueSubject<UIImage, Never>.init(UIImage(systemName: "suit.heart")!)
+    private let color = CurrentValueSubject<UIColor, Never>.init(UIColor(named: "white")!)
     
     private var counter = 0
-    
-    var hotSalesArray: [HomeStore] = []
-    var bestSellerArray: [BestSeller] = []
-    var store: [Store] = []
+
+    var data: Store!
     
     var currentIndexPath: IndexPath!
     
     var one: [AnyHashable] = [1,2,3,4]
-    var two: [AnyHashable] = [9]
+    var search: [AnyHashable] = ["search"]
     
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(named: "gray")
+        configureNavigationBar()
         
         service.getData(requestType: .store).sink { result in
             switch result {
@@ -85,9 +85,24 @@ final class StoreViewController: UIViewController {
                 print(error)
             }
         } receiveValue: { data in
-            self.hotSalesArray = data.home_store
-            self.bestSellerArray = data.best_seller
+            self.data = data
         }.store(in: &cancelable)
+    }
+    
+    //MARK: - configureNavigationBar
+    
+    private func configureNavigationBar() {
+        view.backgroundColor = UIColor(named: "gray")
+        navigationItem.rightBarButtonItem = filterButton
+        filterButton.tintColor = .black
+    }
+    
+    @objc private func presentFilterViewController() {
+        let vc = FilterViewController()
+
+        vc.modalPresentationStyle = .overFullScreen
+        present(vc, animated: true)
+        tabBarController?.tabBar.isHidden = true
     }
     
     //MARK: - setupCollectionView
@@ -118,9 +133,9 @@ final class StoreViewController: UIViewController {
         snapshot.appendSections([.selectCategory, .search, .hotSales, .bestSeller])
         
         snapshot.appendItems(one, toSection: .selectCategory)
-        snapshot.appendItems(two, toSection: .search)
-        snapshot.appendItems(hotSalesArray, toSection: .hotSales)
-        snapshot.appendItems(bestSellerArray, toSection: .bestSeller)
+        snapshot.appendItems(search, toSection: .search)
+        snapshot.appendItems(data.map({ $0.home_store })!, toSection: .hotSales)
+        snapshot.appendItems(data.map({ $0.best_seller })!, toSection: .bestSeller)
 
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
@@ -143,6 +158,15 @@ final class StoreViewController: UIViewController {
 
                 cell.imageView.image = data.images[indexPath.item]
                 cell.titleLabel.text = data.titles[indexPath.item]
+                
+                self.color.sink { newColor in
+              
+                    if indexPath == self.currentIndexPath {
+                        cell.setSelectedState()
+                    } else {
+                        cell.setUnselectedState()
+                    }
+                }.store(in: &self.cancelable)
 
                 return cell
                 
@@ -153,6 +177,8 @@ final class StoreViewController: UIViewController {
                 
             case .hotSales:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.hotSalesCell.rawValue, for: indexPath) as! HotSalesCell
+                
+                let data = self.data.map({$0.home_store})!
             
                 if indexPath.item > 0 {
                     cell.newButton.isHidden = true
@@ -160,28 +186,29 @@ final class StoreViewController: UIViewController {
                 if indexPath.item == 1 {
                     cell.modelNameLabel.isHidden = true
                 } else {
-                    cell.modelNameLabel.text = self.hotSalesArray[indexPath.item].title
-                    cell.subTitleLabel.text = self.hotSalesArray[indexPath.item].subtitle
+                    cell.modelNameLabel.text = data[indexPath.item].title
+                    cell.subTitleLabel.text = data[indexPath.item].subtitle
                 }
 
-                cell.imageView.load(url: (self.hotSalesArray[indexPath.item].picture))
+                cell.imageView.load(url: (data[indexPath.item].picture))
                 
                 return cell
                 
             case .bestSeller:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.bestSellerCell.rawValue, for: indexPath) as! BestSellerCell
+                
+                let data = self.data.map({$0.best_seller})!
 
-                cell.imageView.load(url: (self.bestSellerArray[indexPath.item].picture))
-                cell.priseLabel.text = "$" + String(self.bestSellerArray[indexPath.item].price_without_discount)
-                cell.discontLabel.attributedText = ("$" + String(self.bestSellerArray[indexPath.item].discount_price)).strikeThrough()
-                cell.modelNameLabel.text = self.bestSellerArray[indexPath.item].title
+                cell.imageView.load(url: (data[indexPath.item].picture))
+                cell.priseLabel.text = "$" + String(data[indexPath.item].price_without_discount)
+                cell.discontLabel.attributedText = ("$" + String(data[indexPath.item].discount_price)).strikeThrough()
+                cell.modelNameLabel.text = data[indexPath.item].title
                 
                 self.heartImage.sink { newImage in
                     
                     if indexPath == self.currentIndexPath {
-                        cell.heartImageView.image = newImage
+                        cell.setSelectedState()
                     }
-                  
                 }.store(in: &self.cancelable)
                 
                 return cell
@@ -333,20 +360,17 @@ extension StoreViewController: UICollectionViewDelegate {
         switch section {
             
         case .selectCategory:
-            print("")
+            currentIndexPath = indexPath
+            
+            color.send(.black)
         case .search:
-            print("")
+            print()
         case .hotSales:
-            print("")
+            print()
         case .bestSeller:
             currentIndexPath = indexPath
-            if counter % 2 == 0 {
-                heartImage.send(UIImage(systemName: "heart.fill")!)
-            } else {
-                heartImage.send(UIImage(systemName: "suit.heart")!)
-            }
             
-            counter += 1
+            heartImage.send(UIImage())
         }
     }
 }

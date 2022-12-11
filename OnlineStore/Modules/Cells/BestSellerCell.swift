@@ -10,7 +10,6 @@ import SnapKit
 class BestSellerCell: UICollectionViewCell {
     
     //MARK: - Properties
-
     
     //labels
     let priseLabel = UILabel(font: .systemFont(ofSize: 15, weight: .bold))
@@ -51,6 +50,14 @@ class BestSellerCell: UICollectionViewCell {
         heartView.layer.shadowRadius = 4
         heartView.layer.shadowOpacity = 0.2
         heartView.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
+    }
+    
+    func setSelectedState() {
+        heartImageView.image = UIImage(systemName: "heart.fill")
+    }
+    
+    func setUnselectedState() {
+        heartImageView.image = UIImage(systemName: "suit.heart")
     }
 }
 
