@@ -11,7 +11,9 @@ import SnapKit
 class DropDownButton: UIButton {
 
     //MARK: - Properties
+    
     private let nameLabel = UILabel()
+    private let dropDown = DropDown()
     private let downImageView = UIImageView(image: UIImage(systemName: "chevron.down"), tintColor: .gray)
     
     //MARK: - Init
@@ -29,13 +31,24 @@ class DropDownButton: UIButton {
     
     //MARK: - Methods
     
-    func configure(title: String) {
+    func setTitle(title: String) {
         nameLabel.text = title
+    }
+    
+    func setDropDownList(dataSource: [String]) {
+        dropDown.dataSource = dataSource
+        dropDown.anchorView = self
+        dropDown.bottomOffset = CGPoint(x: 0, y: self.frame.size.height)
+        dropDown.show()
+        
+        dropDown.selectionAction = { [weak self] (index: Int, item: String) in
+            self?.nameLabel.text = item
+        }
     }
     
     private func setupSelfAppearence() {
         self.layer.cornerRadius = 5
-        self.layer.borderColor = UIColor.systemGray.cgColor
+        self.layer.borderColor = UIColor.systemGray5.cgColor
         self.layer.borderWidth = 1
     }
 }
@@ -45,7 +58,7 @@ class DropDownButton: UIButton {
 extension DropDownButton {
     private func setupConstraints() {
         
-        //tittitleLabelle
+        //nameLabel
         
         self.addSubview(nameLabel)
         
@@ -59,7 +72,7 @@ extension DropDownButton {
         self.addSubview(downImageView)
         
         downImageView.snp.makeConstraints { make in
-            make.right.equalToSuperview().inset(10)
+            make.right.equalToSuperview().inset(20)
             make.top.bottom.equalToSuperview().inset(10)
         }
     }

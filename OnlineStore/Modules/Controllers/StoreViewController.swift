@@ -59,12 +59,13 @@ final class StoreViewController: UIViewController {
     
     private var counter = 0
 
-    var data: Store!
+    private var data: Store!
+    private let  selectedCategoryData = SelectedCategoryData()
+    var search: [AnyHashable] = ["search"]
     
     var currentIndexPath: IndexPath!
-    
-    var one: [AnyHashable] = [1,2,3,4]
-    var search: [AnyHashable] = ["search"]
+
+
     
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -72,20 +73,20 @@ final class StoreViewController: UIViewController {
         
         configureNavigationBar()
         
-        service.getData(requestType: .store).sink { result in
+        service.getData(requestType: .store).sink { [weak self] result in
             switch result {
                 
             case .finished:
                 
-                self.setupCollectionView()
-                self.setupDataSource()
-                self.setupSnapshot()
+                self?.setupCollectionView()
+                self?.setupDataSource()
+                self?.setupSnapshot()
                 
             case .failure(let error):
                 print(error)
             }
-        } receiveValue: { data in
-            self.data = data
+        } receiveValue: { [weak self] data in
+            self?.data = data
         }.store(in: &cancelable)
     }
     
@@ -102,7 +103,6 @@ final class StoreViewController: UIViewController {
 
         vc.modalPresentationStyle = .overFullScreen
         present(vc, animated: true)
-        tabBarController?.tabBar.isHidden = true
     }
     
     //MARK: - setupCollectionView
@@ -132,7 +132,7 @@ final class StoreViewController: UIViewController {
 
         snapshot.appendSections([.selectCategory, .search, .hotSales, .bestSeller])
         
-        snapshot.appendItems(one, toSection: .selectCategory)
+        snapshot.appendItems(selectedCategoryData.titles, toSection: .selectCategory)
         snapshot.appendItems(search, toSection: .search)
         snapshot.appendItems(data.map({ $0.home_store })!, toSection: .hotSales)
         snapshot.appendItems(data.map({ $0.best_seller })!, toSection: .bestSeller)
@@ -143,7 +143,7 @@ final class StoreViewController: UIViewController {
     //MARK: - setupDataSource
 
     private func setupDataSource() {
-        dataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>(collectionView: storeCollectionView, cellProvider: {  collectionView, indexPath, _ in
+        dataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>(collectionView: storeCollectionView, cellProvider: { [unowned self]  collectionView, indexPath, _ in
             
             guard let section = Section(rawValue: indexPath.section) else {
                 fatalError("Unknown section kind")
@@ -153,11 +153,9 @@ final class StoreViewController: UIViewController {
                 
             case .selectCategory:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.selectCategoryCell.rawValue, for: indexPath) as! SelectCategoryCell
-                
-                let data = SelectedCategoryData()
 
-                cell.imageView.image = data.images[indexPath.item]
-                cell.titleLabel.text = data.titles[indexPath.item]
+                cell.imageView.image = selectedCategoryData.images[indexPath.item]
+                cell.titleLabel.text = selectedCategoryData.titles[indexPath.item]
                 
                 self.color.sink { newColor in
               
@@ -264,7 +262,7 @@ final class StoreViewController: UIViewController {
         
         let section = NSCollectionLayoutSection(group: group)
         section.contentInsets = NSDirectionalEdgeInsets.init(top: 0, leading: 0, bottom: 0, trailing: 15)
-        section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
+        section.orthogonalScrollingBehavior = .continuous
         
         let sectionHeader = createSectionHeader()
           section.boundarySupplementaryItems = [sectionHeader]
