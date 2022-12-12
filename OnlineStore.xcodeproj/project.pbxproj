@@ -35,9 +35,10 @@
 		D21E7E7129441CC9004CDE96 /* UIView + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E7029441CC9004CDE96 /* UIView + Extension.swift */; };
 		D21E7E7629445551004CDE96 /* SelectedCategoryData.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E7529445551004CDE96 /* SelectedCategoryData.swift */; };
 		D21E7E79294489FB004CDE96 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E78294489FB004CDE96 /* ProfileViewController.swift */; };
-		D21E7E7D2944A212004CDE96 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E7C2944A212004CDE96 /* SectionHeader.swift */; };
 		D21E7E8229466B5E004CDE96 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E8129466B5E004CDE96 /* FilterViewController.swift */; };
 		D21E7E84294670C5004CDE96 /* DropDownButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E83294670C5004CDE96 /* DropDownButton.swift */; };
+		D21E7E8829476BD8004CDE96 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E8729476BD8004CDE96 /* SectionHeader.swift */; };
+		D21E7E8A29479374004CDE96 /* UIStackView + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E8929479374004CDE96 /* UIStackView + Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -73,9 +74,10 @@
 		D21E7E7029441CC9004CDE96 /* UIView + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + Extension.swift"; sourceTree = "<group>"; };
 		D21E7E7529445551004CDE96 /* SelectedCategoryData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedCategoryData.swift; sourceTree = "<group>"; };
 		D21E7E78294489FB004CDE96 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		D21E7E7C2944A212004CDE96 /* SectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SectionHeader.swift; path = ../Modules/Cells/SectionHeader.swift; sourceTree = "<group>"; };
 		D21E7E8129466B5E004CDE96 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		D21E7E83294670C5004CDE96 /* DropDownButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DropDownButton.swift; sourceTree = "<group>"; };
+		D21E7E8729476BD8004CDE96 /* SectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SectionHeader.swift; path = OnlineStore/Extensions/SectionHeader.swift; sourceTree = SOURCE_ROOT; };
+		D21E7E8929479374004CDE96 /* UIStackView + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView + Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,7 +204,6 @@
 		D21E7E6029434846004CDE96 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				D21E7E7C2944A212004CDE96 /* SectionHeader.swift */,
 				D21E7E83294670C5004CDE96 /* DropDownButton.swift */,
 				D21E7E6929435510004CDE96 /* Foundation */,
 				D21E7E6129434852004CDE96 /* UIKit */,
@@ -217,6 +218,7 @@
 				D21E7E6C29436A8B004CDE96 /* UIButton + Extension.swift */,
 				D21E7E6A294367E6004CDE96 /* UITextField + Extension.swift */,
 				D21E7E6329434874004CDE96 /* UIImageView + Extension.swift */,
+				D21E7E8929479374004CDE96 /* UIStackView + Extension.swift */,
 				D21E7E7029441CC9004CDE96 /* UIView + Extension.swift */,
 			);
 			path = UIKit;
@@ -243,6 +245,7 @@
 			children = (
 				D21E7E39294133DE004CDE96 /* StoreViewController.swift */,
 				D21E7E8129466B5E004CDE96 /* FilterViewController.swift */,
+				D21E7E8729476BD8004CDE96 /* SectionHeader.swift */,
 				D21E7E3B294133F9004CDE96 /* DetailViewController.swift */,
 				D21E7E3D2941341C004CDE96 /* CartViewController.swift */,
 				D21E7E5E2943361D004CDE96 /* FavoritesVeiwController.swift */,
@@ -379,14 +382,15 @@
 				D21E7E6D29436A8B004CDE96 /* UIButton + Extension.swift in Sources */,
 				D21E7E592941665A004CDE96 /* SearchCell.swift in Sources */,
 				D21E7E4329413534004CDE96 /* Store.swift in Sources */,
+				D21E7E8A29479374004CDE96 /* UIStackView + Extension.swift in Sources */,
 				D21E7E47294137D9004CDE96 /* Cart.swift in Sources */,
 				D21E7E2029412BAD004CDE96 /* AppDelegate.swift in Sources */,
 				D21E7E84294670C5004CDE96 /* DropDownButton.swift in Sources */,
 				D21E7E6629434B0E004CDE96 /* UILabel + Extension.swift in Sources */,
 				D21E7E2229412BAD004CDE96 /* SceneDelegate.swift in Sources */,
+				D21E7E8829476BD8004CDE96 /* SectionHeader.swift in Sources */,
 				D21E7E79294489FB004CDE96 /* ProfileViewController.swift in Sources */,
 				D21E7E7629445551004CDE96 /* SelectedCategoryData.swift in Sources */,
-				D21E7E7D2944A212004CDE96 /* SectionHeader.swift in Sources */,
 				D21E7E5D29416689004CDE96 /* BestSellerCell.swift in Sources */,
 				D21E7E6429434874004CDE96 /* UIImageView + Extension.swift in Sources */,
 				D21E7E3E2941341C004CDE96 /* CartViewController.swift in Sources */,

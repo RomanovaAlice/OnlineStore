@@ -54,10 +54,7 @@ final class StoreViewController: UIViewController {
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
     private lazy var filterButton = UIBarButtonItem(image: UIImage(named: "funnel"), style: .plain, target: self, action: #selector(presentFilterViewController))
     
-    private let heartImage = CurrentValueSubject<UIImage, Never>.init(UIImage(systemName: "suit.heart")!)
     private let color = CurrentValueSubject<UIColor, Never>.init(UIColor(named: "white")!)
-    
-    private var counter = 0
 
     private var data: Store!
     private let  selectedCategoryData = SelectedCategoryData()
@@ -73,7 +70,7 @@ final class StoreViewController: UIViewController {
         
         configureNavigationBar()
         
-        service.getData(requestType: .store).sink { [weak self] result in
+        service.getData(store: .store).sink { [weak self] result in
             switch result {
                 
             case .finished:
@@ -201,13 +198,6 @@ final class StoreViewController: UIViewController {
                 cell.priseLabel.text = "$" + String(data[indexPath.item].price_without_discount)
                 cell.discontLabel.attributedText = ("$" + String(data[indexPath.item].discount_price)).strikeThrough()
                 cell.modelNameLabel.text = data[indexPath.item].title
-                
-                self.heartImage.sink { newImage in
-                    
-                    if indexPath == self.currentIndexPath {
-                        cell.setSelectedState()
-                    }
-                }.store(in: &self.cancelable)
                 
                 return cell
             }
@@ -366,9 +356,7 @@ extension StoreViewController: UICollectionViewDelegate {
         case .hotSales:
             print()
         case .bestSeller:
-            currentIndexPath = indexPath
-            
-            heartImage.send(UIImage())
+            navigationController?.pushViewController(DetailViewController(), animated: true)
         }
     }
 }

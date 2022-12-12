@@ -11,14 +11,19 @@ class BestSellerCell: UICollectionViewCell {
     
     //MARK: - Properties
     
+    //flags
+    private var isFavorite = false
+    
     //labels
     let priseLabel = UILabel(font: .systemFont(ofSize: 15, weight: .bold))
     let modelNameLabel = UILabel(font: .systemFont(ofSize: 10, weight: .light))
     let discontLabel = UILabel(font: .systemFont(ofSize: 8, weight: .thin), textColor: .systemGray)
     
+    //buttons
+    private let favoriteButton = UIButton(backgroundColor: UIColor(named: "white"), titntColor: UIColor(named: "orange"), image: UIImage(systemName: "suit.heart"))
+    
     //imagesViews
     let imageView = UIImageView()
-    let heartImageView = UIImageView(image: UIImage(systemName: "suit.heart"), tintColor: UIColor(named: "orange"))
     
     //views
     let heartView = UIView(backgroundColor: .white, radius: 12.5)
@@ -28,6 +33,7 @@ class BestSellerCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        addTargetsToButtons()
         setupSelfAppearens()
         setShadows()
         setupConstraints()
@@ -52,12 +58,18 @@ class BestSellerCell: UICollectionViewCell {
         heartView.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
     }
     
-    func setSelectedState() {
-        heartImageView.image = UIImage(systemName: "heart.fill")
+    func addTargetsToButtons() {
+        favoriteButton.addTarget(self, action: #selector(changeImage), for: .touchUpInside)
     }
     
-    func setUnselectedState() {
-        heartImageView.image = UIImage(systemName: "suit.heart")
+    @objc private func changeImage() {
+        isFavorite = !isFavorite
+        
+        if isFavorite {
+            favoriteButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+        } else {
+            favoriteButton.setImage(UIImage(systemName: "suit.heart"), for: .normal)
+        }
     }
 }
 
@@ -103,7 +115,7 @@ extension BestSellerCell {
             make.left.equalToSuperview().inset(21)
         }
         
-        //
+        //heartView
         
         self.addSubview(heartView)
         
@@ -112,14 +124,14 @@ extension BestSellerCell {
             make.height.width.equalTo(25)
         }
         
-        //heartImageView
+        //favoriteButton
         
-        heartView.addSubview(heartImageView)
+        heartView.addSubview(favoriteButton)
         
-        heartImageView.snp.makeConstraints { make in
+        favoriteButton.snp.makeConstraints { make in
             make.centerY.centerX.equalToSuperview()
-            make.height.width.equalTo(15)
+            make.height.equalTo(12)
+            make.width.equalTo(15)
         }
     }
 }
-

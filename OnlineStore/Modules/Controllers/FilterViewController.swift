@@ -27,7 +27,7 @@ class FilterViewController: UIViewController {
     private let sizeButton = DropDownButton()
     
     //stack
-    private lazy var stackView = UIStackView(arrangedSubviews: [brandLabel, modelButton, priceLabel, priceButton, sizeLabel, sizeButton])
+    private lazy var stackView = UIStackView(arrangedSubviews: [brandLabel, modelButton, priceLabel, priceButton, sizeLabel, sizeButton], spacing: 8, axis: .vertical)
 
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -38,7 +38,6 @@ class FilterViewController: UIViewController {
         configureButtons()
         setShadows()
         setupButtonTargets()
-        configureStackView()
         
         setupConstraints()
     }
@@ -50,13 +49,6 @@ class FilterViewController: UIViewController {
         contentView.layer.shadowRadius = 5
         contentView.layer.shadowOpacity = 1
         contentView.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
-    }
-    
-    //MARK: - configureStackView
-    
-    private func configureStackView() {
-        stackView.axis = .vertical
-        stackView.spacing = 8
     }
     
     //MARK: - configureButtons
