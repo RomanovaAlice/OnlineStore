@@ -28,8 +28,15 @@ final class StoreTabBarController: UITabBarController {
         setColors()
         setTabBarAppearance()
         setViewControllers()
-
+        
         setupConstraints()
+    }
+    
+    //MARK: - didSelect
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        if item.image == UIImage(systemName: "bag") {
+            tabBar.isHidden = true
+        }
     }
     
     //MARK: - setViewControllers

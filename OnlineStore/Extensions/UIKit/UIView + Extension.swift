@@ -20,19 +20,22 @@ extension UIView {
     convenience init(imageView: UIImageView, label: UILabel) {
         self.init()
         
-        self.addSubview(imageView)
+        label.font = .systemFont(ofSize: 12, weight: .light)
+        label.textColor = .gray
         
-        imageView.snp.makeConstraints { make in
-            make.height.width.equalTo(28)
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().inset(10)
-        }
+        imageView.tintColor = .gray
         
         self.addSubview(label)
         
         label.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.left.right.bottom.equalToSuperview()
+        }
+        
+        self.addSubview(imageView)
+        
+        imageView.snp.makeConstraints { make in
+            make.height.width.equalTo(28)
+            make.centerX.top.equalToSuperview()
         }
     }
 }

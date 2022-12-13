@@ -11,5 +11,7 @@ final class FavoritesVeiwController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.backgroundColor = UIColor(named: "gray")
     }
 }

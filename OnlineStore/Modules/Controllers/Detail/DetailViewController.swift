@@ -30,21 +30,21 @@ class DetailViewController: UIViewController {
     private let backButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, image: UIImage(systemName: "chevron.backward"), radius: 10)
     private let cartButton = UIButton(backgroundColor: UIColor(named: "orange"), titntColor: .white, image: UIImage(systemName: "bag"), radius: 10)
     private let favoriteButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, image: UIImage(systemName: "suit.heart"), radius: 10)
-    private let shopButton = UIButton()
-    private let detailButton = UIButton()
-    private let featuresButton = UIButton()
+    private let shopButton = SegmentButton(title: "Shop")
+    private let detailButton = SegmentButton(title: "Detail")
+    private let featuresButton = SegmentButton(title: "Features")
     private let minMemoryButton = UIButton(backgroundColor: UIColor(named: "orange"), textColor: .white, radius: 10)
-    private let maxMemoryButton = UIButton()
-    private let brownColorButton = UIButton(titntColor: .white)
-    private let blueColorButton = UIButton(titntColor: .white)
+    private let maxMemoryButton = UIButton(textColor: .gray)
+    private let brownColorButton = UIButton(backgroundColor: .brown, titntColor: .white, image: UIImage(systemName: "checkmark"), radius: 20)
+    private let blueColorButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, radius: 20)
     private lazy var addToCartButton = UIButton()
     
     //imageViews
     private let fiveStarsImageView = UIImageView(image: UIImage(named: "fiveStars"))
-    private let sdImageView = UIImageView(image: UIImage(named: "sd"), tintColor: .systemGray)
-    private let ssdImageView = UIImageView(image: UIImage(named: "ssd"), tintColor: .systemGray)
-    private let cameraImageView = UIImageView(image: UIImage(named: "camera"), tintColor: .systemGray)
-    private let gpuImageView = UIImageView(image: UIImage(named: "gpu"), tintColor: .systemGray)
+    private let sdImageView = UIImageView(image: UIImage(systemName: "internaldrive"))
+    private let ssdImageView = UIImageView(image: UIImage(systemName: "sdcard"))
+    private let cameraImageView = UIImageView(image: UIImage(systemName: "camera"))
+    private let gpuImageView = UIImageView(image: UIImage(systemName: "squareshape.squareshape.dashed"))
     
     //views
     private let carouselView = iCarousel()
@@ -57,14 +57,14 @@ class DetailViewController: UIViewController {
     private lazy var ssdContentView = UIView(imageView: ssdImageView, label: ssdLabel)
     
     //stackViews
-    private lazy var accessoriesStackVeiw = UIStackView(arrangedSubviews: [gpuContentView, cameraContentView, sdContentView, ssdContentView])
-    private lazy var segmentStackVeiw = UIStackView(arrangedSubviews: [shopButton, detailButton, featuresButton])
-    private lazy var colorsStackVeiw = UIStackView(arrangedSubviews: [brownColorButton, blueColorButton])
-    private lazy var memoryStackView = UIStackView(arrangedSubviews: [minMemoryButton, maxMemoryButton])
-    private lazy var colorsAndMemoryStackView = UIStackView(arrangedSubviews: [colorsStackVeiw, memoryStackView])
-    private lazy var selectColorAndCapacityStackView = UIStackView(arrangedSubviews: [selectColorAndCapacityLabel, colorsAndMemoryStackView])
+    private lazy var accessoriesStackVeiw = UIStackView(arrangedSubviews: [gpuContentView, cameraContentView, sdContentView, ssdContentView], spacing: 36, axis: .horizontal)
+    private lazy var segmentStackVeiw = UIStackView(arrangedSubviews: [shopButton, detailButton, featuresButton], spacing: 40, axis: .horizontal)
+    private lazy var colorsStackVeiw = UIStackView(arrangedSubviews: [brownColorButton, blueColorButton], spacing: 19, axis: .horizontal)
+    private lazy var memoryStackView = UIStackView(arrangedSubviews: [minMemoryButton, maxMemoryButton], spacing: 20, axis: .horizontal)
+    private lazy var colorsAndMemoryStackView = UIStackView(arrangedSubviews: [colorsStackVeiw, memoryStackView], spacing: 60, axis: .horizontal)
+    private lazy var selectColorAndCapacityStackView = UIStackView(arrangedSubviews: [selectColorAndCapacityLabel, colorsAndMemoryStackView], spacing: 15, axis: .vertical)
     
-    private lazy var generalStackView = UIStackView(arrangedSubviews: [segmentStackVeiw, accessoriesStackVeiw, selectColorAndCapacityStackView, addToCartButton])
+    private lazy var generalStackView = UIStackView(arrangedSubviews: [segmentStackVeiw, accessoriesStackVeiw, selectColorAndCapacityStackView, addToCartButton], spacing: 30)
     
     //MARK: -viewDidLoad
     override func viewDidLoad() {
@@ -94,8 +94,8 @@ class DetailViewController: UIViewController {
         phoneNameLabel.text = data.title
         gpuLabel.text = data.CPU
         cameraLabel.text = data.camera
-        sdLabel.text = data.sd
-        ssdLabel.text = data.ssd
+        sdLabel.text = data.ssd
+        ssdLabel.text = data.sd
         minMemoryButton.setTitle(data.capacity.first, for: .normal)
         maxMemoryButton.setTitle(data.capacity.last, for: .normal)
     }
@@ -216,9 +216,20 @@ extension DetailViewController {
         productInformationView.addSubview(generalStackView)
         
         generalStackView.snp.makeConstraints { make in
-            make.height.equalTo(250)
+            make.height.equalTo(200)
             make.left.right.equalToSuperview().inset(40)
             make.bottom.equalToSuperview().inset(58)
+        }
+        
+        //
+        
+        memoryStackView.snp.makeConstraints { make in
+            make.width.equalTo(100)
+        }
+        
+        colorsStackVeiw.snp.makeConstraints { make in
+            make.width.equalTo(50)
+            make.height.equalTo(40)
         }
     }
 }

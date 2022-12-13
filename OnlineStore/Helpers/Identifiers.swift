@@ -13,4 +13,5 @@ enum Identifiers: String {
     case hotSalesCell = "HotSalesCell"
     case bestSellerCell = "BestSellerCell"
     case sectionHeader = "SectionHeader"
+    case cartCell = "CartCell"
 }
