@@ -300,8 +300,8 @@
 			isa = PBXGroup;
 			children = (
 				D21E7E3D2941341C004CDE96 /* CartViewController.swift */,
-				D21E7E972949280D004CDE96 /* CartCell.swift */,
 				D21E7E952948E6FF004CDE96 /* CartViewController + Constraints.swift */,
+				D21E7E972949280D004CDE96 /* CartCell.swift */,
 			);
 			path = Cart;
 			sourceTree = "<group>";

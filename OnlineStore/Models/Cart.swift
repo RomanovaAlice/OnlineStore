@@ -7,14 +7,22 @@
 
 import Foundation
 
-struct Cart: Decodable {
+struct Cart: Decodable, Hashable {
     let basket: [Product]
     let delivery: String
     let id: String
     let total: Int
+    
+    static func == (lhs: Cart, rhs: Cart) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
 }
 
-struct Product: Decodable {
+struct Product: Decodable, Hashable {
     let id: Int
     let images: String
     let price: Int

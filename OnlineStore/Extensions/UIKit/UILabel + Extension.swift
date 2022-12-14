@@ -12,6 +12,7 @@ extension UILabel {
                      font: UIFont = .systemFont(ofSize: 15),
                      textColor: UIColor? = .black,
                      tintColor: UIColor? = .black,
+                     numberOfLines: Int = 0,
                      textAlignment: NSTextAlignment = .left,
                      alpha: CGFloat = 1) {
         self.init()
@@ -22,5 +23,6 @@ extension UILabel {
         self.tintColor = tintColor
         self.textAlignment = textAlignment
         self.alpha = alpha
+        self.numberOfLines = numberOfLines
     }
 }

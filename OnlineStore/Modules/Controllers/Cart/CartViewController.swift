@@ -35,10 +35,16 @@ final class CartViewController: UIViewController {
     let bottomSeparatorView = UIView(backgroundColor: .gray)
     
     //other
+    var currentIndexPath = 0
+    var oldValue = 0
+    var newValue = 0
+    var priceOne = 0
+    var priceTwo = 0
+    private let service = NetworkService()
     var cartCollectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
     private var cancelable: Set<AnyCancellable> = []
-    let isSelected = CurrentValueSubject<Bool, Never>.init(true)
+    private var data: Cart!
     
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -47,12 +53,23 @@ final class CartViewController: UIViewController {
         view.backgroundColor = UIColor(named: "gray")
         
         setShadows()
-        setupCollectionView()
-        setupSnapshot()
-        setupDataSource()
         addTargetsToButtons()
         
-        setupConstraints()
+        service.getData(cart: .cart).sink { event in
+            switch event {
+                
+            case .finished:
+                self.setupCollectionView()
+                self.setupDataSource()
+                self.setupSnapshot()
+                
+                self.setupConstraints()
+            case .failure(let error):
+                print(error)
+            }
+        } receiveValue: { data in
+            self.data = data
+        }.store(in: &cancelable)
     }
     
     //MARK: - setShadows
@@ -91,6 +108,9 @@ final class CartViewController: UIViewController {
 
     private func setupSnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
+        
+        snapshot.appendSections([.cart])
+        snapshot.appendItems(data.map({ $0.basket })!, toSection: .cart)
 
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
@@ -101,6 +121,23 @@ final class CartViewController: UIViewController {
         dataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>(collectionView: cartCollectionView, cellProvider: { [unowned self] collectionView, indexPath, _ in
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.cartCell.rawValue, for: indexPath) as! CartCell
+            
+            cell.modelNameLabel.text = self.data.basket[indexPath.item].title
+            cell.phoneImageView.load(url: self.data.basket[indexPath.item].images)
+            cell.priseLabel.text = "$\(String(self.data.basket[indexPath.item].price)).00"
+            
+            cell.counter.sink { newValue in
+                if indexPath.item == 0 {
+                    self.priceOne = self.data.basket[indexPath.item].price * newValue
+                    self.oldValue = newValue
+                } else {
+                    self.priceTwo = self.data.basket[indexPath.item].price * newValue
+                    self.newValue = newValue
+                }
+                self.totalPriceLabel.text = "$\(self.priceOne + self.priceTwo) us"
+                self.tabBarItem.badgeValue = "\(self.oldValue + self.newValue)"
+                
+            }.store(in: &cancelable)
             
             return cell
         })
@@ -120,15 +157,14 @@ final class CartViewController: UIViewController {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                               heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets = NSDirectionalEdgeInsets.init(top: 10, leading: 5, bottom: 0, trailing: 5)
+        item.contentInsets = NSDirectionalEdgeInsets.init(top: 22, leading: 0, bottom: 22, trailing: 0)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1/4),
-                                               heightDimension: .fractionalWidth(1/3))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                               heightDimension: .fractionalWidth(0.36))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [item])
         
         let section = NSCollectionLayoutSection(group: group)
-        section.contentInsets = NSDirectionalEdgeInsets.init(top: 0, leading: 0, bottom: 0, trailing: 15)
- 
+        section.contentInsets = NSDirectionalEdgeInsets.init(top: 0, leading: 25, bottom: 0, trailing: 20)
         
         return section
     }

@@ -43,6 +43,7 @@ final class StoreTabBarController: UITabBarController {
     
     private func setViewControllers() {
         cartViewController.tabBarItem.image = UIImage(systemName: "bag")
+        cartViewController.tabBarItem.badgeValue = "2"
         favoritesViewController.tabBarItem.image = UIImage(systemName: "heart")
         profileViewController.tabBarItem.image = UIImage(systemName: "person")
         

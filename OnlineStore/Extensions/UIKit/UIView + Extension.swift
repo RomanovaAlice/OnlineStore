@@ -10,11 +10,13 @@ import SnapKit
 extension UIView {
     
     convenience init(backgroundColor: UIColor? = .clear,
-                     radius: CGFloat = 0) {
+                     radius: CGFloat = 0,
+                     alpha: CGFloat = 1) {
         self.init()
         
         self.backgroundColor = backgroundColor
         self.layer.cornerRadius = radius
+        self.alpha = alpha
     }
     
     convenience init(imageView: UIImageView, label: UILabel) {

@@ -14,7 +14,8 @@ extension UIButton {
                      textColor: UIColor? = .black,
                      titntColor: UIColor? = .black,
                      image: UIImage? = nil,
-                     radius: CGFloat = 0) {
+                     radius: CGFloat = 0,
+                     alpha: CGFloat = 1) {
         self.init()
         
         self.backgroundColor = backgroundColor
@@ -23,6 +24,7 @@ extension UIButton {
         self.setTitle(title, for: .normal)
         self.titleLabel?.font = font
         self.imageView?.tintColor = titntColor
+        self.alpha = alpha
         
         if image != nil {
             self.setImage(image, for: .normal)
