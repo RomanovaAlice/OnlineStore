@@ -5,16 +5,32 @@
 //  Created by Алиса Романова on 07.12.2022.
 //
 
-import iCarousel
 import Combine
+import UIKit
 
 class DetailViewController: UIViewController {
+    
+    private enum Section: Int, CaseIterable {
+        case detail
+    }
     
     //MARK: - Properties
     
     private var data: PhoneModel!
     private let service = NetworkService()
     private var cancelable: Set<AnyCancellable> = []
+    var detailCollectionView: UICollectionView!
+    private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
+    
+    //flags
+    private var favoriteButtonIsSelected = true
+    private var shopButtonIsSelected = true
+    private var detailButtonIsSelected = true
+    private var featuresButtonIsSelected = true
+    private var brownButtonIsSelected = true
+    private var blueButtonIsSelected = true
+    private var maxMemoryButtonIsSelected = true
+    private var minMemoryButtonIsSelected = true
     
     //labels
     let titleLabel = UILabel(text: "Product Details")
@@ -31,13 +47,12 @@ class DetailViewController: UIViewController {
     let favoriteButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, image: UIImage(systemName: "suit.heart"), radius: 10)
     let brownColorButton = UIButton(backgroundColor: .brown, titntColor: .white, image: UIImage(systemName: "checkmark"), radius: 20)
     let blueColorButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, radius: 20)
-    let addToCartButton = UIButton(backgroundColor: UIColor(named: "orange"), font: .systemFont(ofSize: 25, weight: .semibold), title: "Add to Cart", textColor: .white, radius: 10)
-    
-    private let shopButton = SegmentButton(title: "Shop")
-    private let detailButton = SegmentButton(title: "Details")
-    private let featuresButton = SegmentButton(title: "Features")
-    private let minMemoryButton = UIButton(backgroundColor: UIColor(named: "orange"), textColor: .white, radius: 12)
-    private let maxMemoryButton = UIButton(textColor: .gray)
+    let addToCartButton = UIButton(backgroundColor: UIColor(named: "orange"), font: .systemFont(ofSize: 20, weight: .semibold), textColor: .white, radius: 10)
+    let minMemoryButton = UIButton(backgroundColor: UIColor(named: "orange"), textColor: .white, radius: 11)
+    let maxMemoryButton = UIButton(textColor: .gray, radius: 11)
+    let shopButton = SegmentButton(title: "Shop")
+    let detailButton = SegmentButton(title: "Details")
+    let featuresButton = SegmentButton(title: "Features")
     
     //imageViews
     let fiveStarsImageView = UIImageView(image: UIImage(named: "fiveStars"), tintColor: .systemGray2)
@@ -47,38 +62,35 @@ class DetailViewController: UIViewController {
     let gpuImageView = UIImageView(image: UIImage(systemName: "squareshape.squareshape.dashed"), tintColor: .systemGray2)
     
     //views
-    let carouselView = iCarousel()
     let productInformationView = UIView(backgroundColor: UIColor(named: "white"), radius: 35)
     
     //stackViews
     lazy var accessoryTitlesStackView = UIStackView(arrangedSubviews: [gpuLabel, cameraLabel, sdLabel, ssdLabel], spacing: 27, axis: .horizontal)
-    lazy var segmentStackVeiw = UIStackView(arrangedSubviews: [shopButton, detailButton, featuresButton], spacing: 67, axis: .horizontal)
-    lazy var memoryStackView = UIStackView(arrangedSubviews: [minMemoryButton, maxMemoryButton], spacing: 15, axis: .horizontal)
     
     //MARK: -viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNavigationBar()
+        setShadows()
         addTargetsToButtons()
         
         service.getData(phoneModel: .phoneModel).sink { event in
             switch event {
                 
             case .finished:
-                self.setupNavigationBar()
-                self.setShadows()
-                self.setupCarousel()
+                self.setupCollectionView()
+                self.setupDataSource()
+                self.setupSnapshot()
                 
                 self.setData()
-                
+                self.setupConstraints()
             case .failure(let error):
                 print(error)
             }
         } receiveValue: { data in
             self.data = data
         }.store(in: &cancelable)
-
-        setupConstraints()
     }
     
     private func setData() {
@@ -89,8 +101,8 @@ class DetailViewController: UIViewController {
         ssdLabel.text = data.sd
         minMemoryButton.setTitle("\(data.capacity.first!) gb", for: .normal)
         maxMemoryButton.setTitle("\(data.capacity.last!) gb", for: .normal)
+        addToCartButton.setTitle("Add to Cart           $\(data.price).00", for: .normal)
     }
-    
     
     //MARK: - setupNavigationBar
     
@@ -100,15 +112,14 @@ class DetailViewController: UIViewController {
         navigationItem.hidesBackButton = true
     }
     
-    //
+    //MARK: - setupCollectionView
     
-    private func addTargetsToButtons() {
-        backButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
-    }
-    
-    @objc private func goBack() {
-        navigationController?.popViewController(animated: true)
-        tabBarController?.tabBar.isHidden = false
+    private func setupCollectionView() {
+        detailCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
+        detailCollectionView.backgroundColor = .clear
+        detailCollectionView.showsVerticalScrollIndicator = false
+
+        detailCollectionView.register(DetailCell.self, forCellWithReuseIdentifier: Identifiers.detailCell.rawValue)
     }
     
     //MARK: - setupNavigationBar
@@ -120,41 +131,183 @@ class DetailViewController: UIViewController {
         productInformationView.layer.shadowOffset = CGSize(width: 5, height: 5)
     }
     
-    //MARK: - setupCarousel
+    //MARK: - addTargetsToButtons
     
-    private func setupCarousel() {
-        carouselView.type = .rotary
-        carouselView.dataSource = self
-    }
-}
-
-//MARK: - iCarouselDataSource
-
-extension DetailViewController: iCarouselDataSource {
-    
-    func numberOfItems(in carousel: iCarousel) -> Int {
-        return 3
+    private func addTargetsToButtons() {
+        backButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
+        shopButton.addTarget(self, action: #selector(shopButtonButtonTapped), for: .touchUpInside)
+        detailButton.addTarget(self, action: #selector(detailButtonTapped), for: .touchUpInside)
+        featuresButton.addTarget(self, action: #selector(featuresButtonTapped), for: .touchUpInside)
+        favoriteButton.addTarget(self, action: #selector(favoriteButtonTapped), for: .touchUpInside)
+        brownColorButton.addTarget(self, action: #selector(brownButtonTapped), for: .touchUpInside)
+        blueColorButton.addTarget(self, action: #selector(blueButtonTapped), for: .touchUpInside)
+        maxMemoryButton.addTarget(self, action: #selector(maxMemoryButtonTapped), for: .touchUpInside)
+        minMemoryButton.addTarget(self, action: #selector(minMemoryButtonTapped), for: .touchUpInside)
     }
     
-    func carousel(_ carousel: iCarousel, viewForItemAt index: Int, reusing view: UIView?) -> UIView {
-        let cell = UIView(frame: CGRect(x: 0, y: 0, width: 220, height: 300))
+    //MARK: - @objc maxMemoryButtonTapped
+    
+    @objc private func maxMemoryButtonTapped() {
+        if maxMemoryButtonIsSelected == true {
+            maxMemoryButton.backgroundColor = UIColor(named: "orange")
+            maxMemoryButton.setTitleColor(.white, for: .normal)
+            
+            minMemoryButton.backgroundColor = .clear
+            minMemoryButton.setTitleColor(.gray, for: .normal)
+            
+            minMemoryButtonIsSelected = true
+            maxMemoryButtonIsSelected = false
+        }
+    }
+    
+    //MARK: - @objc minMemoryButtonTapped
+    
+    @objc private func minMemoryButtonTapped() {
+        if brownButtonIsSelected == true {
+            minMemoryButton.backgroundColor = UIColor(named: "orange")
+            minMemoryButton.setTitleColor(.white, for: .normal)
+            
+            maxMemoryButton.backgroundColor = .clear
+            maxMemoryButton.setTitleColor(.gray, for: .normal)
+            
+            maxMemoryButtonIsSelected = true
+            minMemoryButtonIsSelected = false
+        }
+    }
+    
+    //MARK: - @objc brownButtonTapped
+    
+    @objc private func brownButtonTapped() {
+        if brownButtonIsSelected == true {
+            brownColorButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            blueColorButton.setImage(UIImage(), for: .normal)
+            
+            blueButtonIsSelected = true
+            brownButtonIsSelected = false
+        }
+    }
+    
+    //MARK: - @objc blueButtonTapped
+    
+    @objc private func blueButtonTapped() {
+        if blueButtonIsSelected == true {
+            blueColorButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            brownColorButton.setImage(UIImage(), for: .normal)
+            
+            blueButtonIsSelected = false
+            brownButtonIsSelected = true
+        }
+    }
+    
+    //MARK: - @objc favoriteButtonTapped
+    
+    @objc private func favoriteButtonTapped() {
+        favoriteButtonIsSelected = !favoriteButtonIsSelected
         
-        let image = UIImageView()
-        image.center = cell.center
-        cell.addSubview(image)
-        view?.backgroundColor = .red
-        image.load(url: data.images[index])
+        if favoriteButtonIsSelected == true {
+            favoriteButton.setImage(UIImage(systemName: "suit.heart"), for: .normal)
+        } else {
+            favoriteButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+        }
+    }
+    
+    //MARK: - @objc shopButtonButtonTapped
+    
+    @objc private func shopButtonButtonTapped() {
+        if shopButtonIsSelected == true {
+            shopButton.setSelectedState()
+            detailButton.setUnselectedState()
+            featuresButton.setUnselectedState()
+            
+            detailButtonIsSelected = true
+            featuresButtonIsSelected = true
+            shopButtonIsSelected = false
+        }
+    }
+    
+    //MARK: - @objc detailButtonTapped
+    
+    @objc private func detailButtonTapped() {
+        if detailButtonIsSelected == true {
+            detailButton.setSelectedState()
+            shopButton.setUnselectedState()
+            featuresButton.setUnselectedState()
+            
+            shopButtonIsSelected = true
+            featuresButtonIsSelected = true
+            detailButtonIsSelected = false
+        }
+    }
+    
+    //MARK: - @objc featuresButtonTapped
+    
+    @objc private func featuresButtonTapped() {
+        if featuresButtonIsSelected == true {
+            featuresButton.setSelectedState()
+            shopButton.setUnselectedState()
+            detailButton.setUnselectedState()
+            
+            shopButtonIsSelected = true
+            detailButtonIsSelected = true
+            featuresButtonIsSelected = false
+        }
+    }
+    
+    //MARK: - @objc goBack
+    
+    @objc private func goBack() {
+        navigationController?.popViewController(animated: true)
+        tabBarController?.tabBar.isHidden = false
+    }
+    
+    //MARK: - setupSnapshot
+
+    private func setupSnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
         
-        cell.backgroundColor = .gray
-        cell.layer.borderWidth = 1
+        snapshot.appendSections([.detail])
+        snapshot.appendItems(data.map({ $0.images })!, toSection: .detail)
+
+        dataSource?.apply(snapshot, animatingDifferences: true)
+    }
+    
+    //MARK: - setupDataSource
+
+    private func setupDataSource() {
+        dataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>(collectionView: detailCollectionView, cellProvider: { [unowned self] collectionView, indexPath, _ in
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.detailCell.rawValue, for: indexPath) as! DetailCell
+
+            cell.imageView.load(url: data.images.first!)
+            
+            return cell
+        })
+    }
+
+    //MARK: - createCompositionalLayout
+    
+    private func createCompositionalLayout() -> UICollectionViewLayout {
+        let layout = UICollectionViewCompositionalLayout(section: createSection())
+        return layout
+    }
         
-        cell.layer.shadowColor = UIColor.systemGray3.cgColor
-        cell.layer.shadowRadius = 5
-        cell.layer.shadowOpacity = 0.7
-        cell.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
+    //MARK: - createSection
+
+    private func createSection() -> NSCollectionLayoutSection {
+
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                              heightDimension: .fractionalHeight(1))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets.init(top: 0, leading: 40, bottom: 0, trailing: 40)
         
-        cell.layer.cornerRadius = 20
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9),
+                                               heightDimension: .fractionalWidth(0.75))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
-        return cell
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets.init(top: 20, leading: 20, bottom: 10, trailing: 60)
+        section.orthogonalScrollingBehavior = .groupPaging
+        
+        return section
     }
 }

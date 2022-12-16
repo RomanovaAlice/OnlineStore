@@ -71,7 +71,7 @@ final class StoreTabBarController: UITabBarController {
         let height = tabBar.bounds.height + positionOnY * 2
         
         let roundLayer = CAShapeLayer ()
-        let bezierPath = UIBezierPath(roundedRect: CGRect (x: positionOnX, y: tabBar.bounds.minY - positionOnY - 5, width: width, height: height), cornerRadius: 25)
+        let bezierPath = UIBezierPath(roundedRect: CGRect (x: positionOnX, y: tabBar.bounds.minY - positionOnY - 5, width: width, height: height), cornerRadius: 30)
         
         roundLayer.fillColor = UIColor(named: "blue")?.cgColor
         roundLayer.path = bezierPath.cgPath

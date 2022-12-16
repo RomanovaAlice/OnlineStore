@@ -63,7 +63,6 @@ final class StoreViewController: UIViewController {
     var currentIndexPath: IndexPath!
 
 
-    
     //MARK: - viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()

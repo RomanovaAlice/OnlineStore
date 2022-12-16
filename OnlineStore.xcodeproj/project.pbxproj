@@ -40,10 +40,10 @@
 		D21E7E8829476BD8004CDE96 /* SectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E8729476BD8004CDE96 /* SectionHeader.swift */; };
 		D21E7E8A29479374004CDE96 /* UIStackView + Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E8929479374004CDE96 /* UIStackView + Extension.swift */; };
 		D21E7E8C2948BFA1004CDE96 /* SegmentButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E8B2948BFA1004CDE96 /* SegmentButton.swift */; };
-		D21E7E8E2948BFBC004CDE96 /* AddToCartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E8D2948BFBC004CDE96 /* AddToCartButton.swift */; };
 		D21E7E962948E6FF004CDE96 /* CartViewController + Constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E952948E6FF004CDE96 /* CartViewController + Constraints.swift */; };
 		D21E7E982949280D004CDE96 /* CartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E972949280D004CDE96 /* CartCell.swift */; };
 		D21E7E9A294BC24B004CDE96 /* DetailViewController + Constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E99294BC24B004CDE96 /* DetailViewController + Constraints.swift */; };
+		D21E7E9C294D0A73004CDE96 /* DetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E9B294D0A73004CDE96 /* DetailCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,10 +84,10 @@
 		D21E7E8729476BD8004CDE96 /* SectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SectionHeader.swift; path = OnlineStore/Modules/Controllers/Store/SectionHeader.swift; sourceTree = SOURCE_ROOT; };
 		D21E7E8929479374004CDE96 /* UIStackView + Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView + Extension.swift"; sourceTree = "<group>"; };
 		D21E7E8B2948BFA1004CDE96 /* SegmentButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentButton.swift; sourceTree = "<group>"; };
-		D21E7E8D2948BFBC004CDE96 /* AddToCartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToCartButton.swift; sourceTree = "<group>"; };
 		D21E7E952948E6FF004CDE96 /* CartViewController + Constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartViewController + Constraints.swift"; sourceTree = "<group>"; };
 		D21E7E972949280D004CDE96 /* CartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartCell.swift; sourceTree = "<group>"; };
 		D21E7E99294BC24B004CDE96 /* DetailViewController + Constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DetailViewController + Constraints.swift"; sourceTree = "<group>"; };
+		D21E7E9B294D0A73004CDE96 /* DetailCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -273,7 +273,6 @@
 		D21E7E8F2948BFC3004CDE96 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
-				D21E7E8D2948BFBC004CDE96 /* AddToCartButton.swift */,
 				D21E7E8B2948BFA1004CDE96 /* SegmentButton.swift */,
 				D21E7E83294670C5004CDE96 /* DropDownButton.swift */,
 			);
@@ -295,6 +294,7 @@
 			children = (
 				D21E7E3B294133F9004CDE96 /* DetailViewController.swift */,
 				D21E7E99294BC24B004CDE96 /* DetailViewController + Constraints.swift */,
+				D21E7E9B294D0A73004CDE96 /* DetailCell.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -433,9 +433,9 @@
 				D21E7E8A29479374004CDE96 /* UIStackView + Extension.swift in Sources */,
 				D21E7E47294137D9004CDE96 /* Cart.swift in Sources */,
 				D21E7E2029412BAD004CDE96 /* AppDelegate.swift in Sources */,
-				D21E7E8E2948BFBC004CDE96 /* AddToCartButton.swift in Sources */,
 				D21E7E8C2948BFA1004CDE96 /* SegmentButton.swift in Sources */,
 				D21E7E84294670C5004CDE96 /* DropDownButton.swift in Sources */,
+				D21E7E9C294D0A73004CDE96 /* DetailCell.swift in Sources */,
 				D21E7E6629434B0E004CDE96 /* UILabel + Extension.swift in Sources */,
 				D21E7E962948E6FF004CDE96 /* CartViewController + Constraints.swift in Sources */,
 				D21E7E2229412BAD004CDE96 /* SceneDelegate.swift in Sources */,

@@ -26,6 +26,7 @@ final class SegmentButton: UIButton {
         self.init()
         
         self.title.text = title
+        self.title.numberOfLines = 1
         bottomView.isHidden = true
     }
     
@@ -38,13 +39,13 @@ final class SegmentButton: UIButton {
     func setSelectedState() {
         title.font = .systemFont(ofSize: 20, weight: .bold)
         title.textColor = .black
-        bottomView.isHidden = true
+        bottomView.isHidden = false
     }
     
     func setUnselectedState() {
         title.font = .systemFont(ofSize: 20, weight: .medium)
         title.textColor = .gray
-        bottomView.isHidden = false
+        bottomView.isHidden = true
     }
 }
 
@@ -59,7 +60,7 @@ extension SegmentButton {
         
         bottomView.snp.makeConstraints { make in
             make.left.right.bottom.equalToSuperview()
-            make.height.equalTo(2)
+            make.height.equalTo(3)
         }
         
         //title

@@ -39,14 +39,14 @@ extension DetailViewController {
             make.width.height.equalTo(37)
         }
         
-        //carouselView
+        //detailCollectionView
         
-        view.addSubview(carouselView)
+        view.addSubview(detailCollectionView)
         
-        carouselView.snp.makeConstraints { make in
+        detailCollectionView.snp.makeConstraints { make in
             make.left.right.equalToSuperview()
-            make.top.equalToSuperview().inset(130)
-            make.height.equalTo(310)
+            make.top.equalToSuperview().inset(120)
+            make.height.equalTo(330)
         }
         
         //productInformationView
@@ -54,7 +54,7 @@ extension DetailViewController {
         view.addSubview(productInformationView)
         
         productInformationView.snp.makeConstraints { make in
-            make.top.equalTo(carouselView.snp.bottom).offset(7)
+            make.top.equalTo(detailCollectionView.snp.bottom)
             make.left.right.bottom.equalToSuperview()
         }
         
@@ -88,13 +88,33 @@ extension DetailViewController {
             make.width.equalTo(140)
         }
         
-        //segmentStackVeiw
+        //shopButton
         
-        productInformationView.addSubview(segmentStackVeiw)
+        productInformationView.addSubview(shopButton)
         
-        segmentStackVeiw.snp.makeConstraints { make in
-            make.left.equalToSuperview().inset(40)
-            make.top.equalTo(fiveStarsImageView.snp.bottom).offset(23)
+        shopButton.snp.makeConstraints { make in
+            make.left.equalToSuperview().inset(27)
+            make.height.equalTo(40)
+            make.width.equalTo(90)
+            make.top.equalTo(fiveStarsImageView.snp.bottom).offset(10)
+        }
+        
+        //detailButton
+        
+        productInformationView.addSubview(detailButton)
+        
+        detailButton.snp.makeConstraints { make in
+            make.width.height.top.equalTo(shopButton)
+            make.left.equalTo(shopButton.snp.right).offset(25)
+        }
+        
+        //featuresButton
+        
+        productInformationView.addSubview(featuresButton)
+        
+        featuresButton.snp.makeConstraints { make in
+            make.width.height.top.equalTo(shopButton)
+            make.left.equalTo(detailButton.snp.right).offset(25)
         }
 
         //addToCartButton
@@ -177,15 +197,24 @@ extension DetailViewController {
             make.top.equalTo(selectColorAndCapacityLabel.snp.bottom).offset(14)
         }
         
-        //memoryStackView
+        //minMemoryButton
         
-        productInformationView.addSubview(memoryStackView)
+        productInformationView.addSubview(minMemoryButton)
         
-        memoryStackView.snp.makeConstraints { make in
+        minMemoryButton.snp.makeConstraints { make in
+            make.right.equalToSuperview().inset(125)
             make.height.equalTo(35)
-            make.width.equalTo(150)
-            make.right.equalToSuperview().inset(57)
-            make.top.equalTo(selectColorAndCapacityLabel.snp.bottom).offset(17)
+            make.width.equalTo(70)
+            make.bottom.equalTo(addToCartButton.snp.top).offset(-30)
+        }
+        
+        //maxMemoryButton
+        
+        productInformationView.addSubview(maxMemoryButton)
+        
+        maxMemoryButton.snp.makeConstraints { make in
+            make.height.width.bottom.equalTo(minMemoryButton)
+            make.left.equalTo(minMemoryButton.snp.right).offset(10)
         }
     }
 }
