@@ -5,7 +5,7 @@
 //  Created by Алиса Романова on 07.12.2022.
 //
 
-import SnapKit
+import UIKit
 import Combine
 
 final class CartViewController: UIViewController {

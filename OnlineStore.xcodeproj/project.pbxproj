@@ -43,6 +43,7 @@
 		D21E7E8E2948BFBC004CDE96 /* AddToCartButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E8D2948BFBC004CDE96 /* AddToCartButton.swift */; };
 		D21E7E962948E6FF004CDE96 /* CartViewController + Constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E952948E6FF004CDE96 /* CartViewController + Constraints.swift */; };
 		D21E7E982949280D004CDE96 /* CartCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E972949280D004CDE96 /* CartCell.swift */; };
+		D21E7E9A294BC24B004CDE96 /* DetailViewController + Constraints.swift in Sources */ = {isa = PBXBuildFile; fileRef = D21E7E99294BC24B004CDE96 /* DetailViewController + Constraints.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,6 +87,7 @@
 		D21E7E8D2948BFBC004CDE96 /* AddToCartButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToCartButton.swift; sourceTree = "<group>"; };
 		D21E7E952948E6FF004CDE96 /* CartViewController + Constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CartViewController + Constraints.swift"; sourceTree = "<group>"; };
 		D21E7E972949280D004CDE96 /* CartCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CartCell.swift; sourceTree = "<group>"; };
+		D21E7E99294BC24B004CDE96 /* DetailViewController + Constraints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DetailViewController + Constraints.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -292,6 +294,7 @@
 			isa = PBXGroup;
 			children = (
 				D21E7E3B294133F9004CDE96 /* DetailViewController.swift */,
+				D21E7E99294BC24B004CDE96 /* DetailViewController + Constraints.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -452,6 +455,7 @@
 				D21E7E7129441CC9004CDE96 /* UIView + Extension.swift in Sources */,
 				D21E7E5429416159004CDE96 /* SelectCategoryCell.swift in Sources */,
 				D21E7E5029413D26004CDE96 /* NetworkService.swift in Sources */,
+				D21E7E9A294BC24B004CDE96 /* DetailViewController + Constraints.swift in Sources */,
 				D21E7E402941344D004CDE96 /* StoreTabBarController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

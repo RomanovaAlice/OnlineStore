@@ -6,7 +6,6 @@
 //
 
 import iCarousel
-import SnapKit
 import Combine
 
 class DetailViewController: UIViewController {
@@ -18,57 +17,49 @@ class DetailViewController: UIViewController {
     private var cancelable: Set<AnyCancellable> = []
     
     //labels
-    private let titleLabel = UILabel(text: "Product Details")
-    private let phoneNameLabel = UILabel()
-    private let selectColorAndCapacityLabel = UILabel(text: "Select color and capacity")
-    private let sdLabel = UILabel()
-    private let cameraLabel = UILabel()
-    private let gpuLabel = UILabel()
-    private let ssdLabel = UILabel()
+    let titleLabel = UILabel(text: "Product Details")
+    let phoneNameLabel = UILabel(font: .systemFont(ofSize: 24, weight: .medium))
+    let selectColorAndCapacityLabel = UILabel(text: "Select color and capacity", font: .systemFont(ofSize: 16, weight: .semibold))
+    private let sdLabel = UILabel(font: .systemFont(ofSize: 11, weight: .light), textColor: .systemGray, textAlignment: .center)
+    private let cameraLabel = UILabel(font: .systemFont(ofSize: 11, weight: .light), textColor: .systemGray, textAlignment: .center)
+    private let gpuLabel = UILabel(font: .systemFont(ofSize: 11, weight: .light), textColor: .systemGray, textAlignment: .center)
+    private let ssdLabel = UILabel(font: .systemFont(ofSize: 11, weight: .light), textColor: .systemGray, textAlignment: .center)
     
     //buttons
-    private let backButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, image: UIImage(systemName: "chevron.backward"), radius: 10)
-    private let cartButton = UIButton(backgroundColor: UIColor(named: "orange"), titntColor: .white, image: UIImage(systemName: "bag"), radius: 10)
-    private let favoriteButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, image: UIImage(systemName: "suit.heart"), radius: 10)
+    let backButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, image: UIImage(systemName: "chevron.backward"), radius: 10)
+    let cartButton = UIButton(backgroundColor: UIColor(named: "orange"), titntColor: .white, image: UIImage(systemName: "bag"), radius: 10)
+    let favoriteButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, image: UIImage(systemName: "suit.heart"), radius: 10)
+    let brownColorButton = UIButton(backgroundColor: .brown, titntColor: .white, image: UIImage(systemName: "checkmark"), radius: 20)
+    let blueColorButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, radius: 20)
+    let addToCartButton = UIButton(backgroundColor: UIColor(named: "orange"), font: .systemFont(ofSize: 25, weight: .semibold), title: "Add to Cart", textColor: .white, radius: 10)
+    
     private let shopButton = SegmentButton(title: "Shop")
-    private let detailButton = SegmentButton(title: "Detail")
+    private let detailButton = SegmentButton(title: "Details")
     private let featuresButton = SegmentButton(title: "Features")
-    private let minMemoryButton = UIButton(backgroundColor: UIColor(named: "orange"), textColor: .white, radius: 10)
+    private let minMemoryButton = UIButton(backgroundColor: UIColor(named: "orange"), textColor: .white, radius: 12)
     private let maxMemoryButton = UIButton(textColor: .gray)
-    private let brownColorButton = UIButton(backgroundColor: .brown, titntColor: .white, image: UIImage(systemName: "checkmark"), radius: 20)
-    private let blueColorButton = UIButton(backgroundColor: UIColor(named: "blue"), titntColor: .white, radius: 20)
-    private lazy var addToCartButton = UIButton()
     
     //imageViews
-    private let fiveStarsImageView = UIImageView(image: UIImage(named: "fiveStars"))
-    private let sdImageView = UIImageView(image: UIImage(systemName: "internaldrive"))
-    private let ssdImageView = UIImageView(image: UIImage(systemName: "sdcard"))
-    private let cameraImageView = UIImageView(image: UIImage(systemName: "camera"))
-    private let gpuImageView = UIImageView(image: UIImage(systemName: "squareshape.squareshape.dashed"))
+    let fiveStarsImageView = UIImageView(image: UIImage(named: "fiveStars"), tintColor: .systemGray2)
+    let sdImageView = UIImageView(image: UIImage(systemName: "sdcard"), tintColor: .systemGray2)
+    let ssdImageView = UIImageView(image: UIImage(systemName: "internaldrive"), tintColor: .systemGray2)
+    let cameraImageView = UIImageView(image: UIImage(systemName: "camera"), tintColor: .systemGray2)
+    let gpuImageView = UIImageView(image: UIImage(systemName: "squareshape.squareshape.dashed"), tintColor: .systemGray2)
     
     //views
-    private let carouselView = iCarousel()
-    private let productInformationView = UIView(backgroundColor: UIColor(named: "white"), radius: 35)
-
-    //contentViews
-    private lazy var gpuContentView = UIView(imageView: gpuImageView, label: gpuLabel)
-    private lazy var cameraContentView = UIView(imageView: cameraImageView, label: cameraLabel)
-    private lazy var sdContentView = UIView(imageView: sdImageView, label: sdLabel)
-    private lazy var ssdContentView = UIView(imageView: ssdImageView, label: ssdLabel)
+    let carouselView = iCarousel()
+    let productInformationView = UIView(backgroundColor: UIColor(named: "white"), radius: 35)
     
     //stackViews
-    private lazy var accessoriesStackVeiw = UIStackView(arrangedSubviews: [gpuContentView, cameraContentView, sdContentView, ssdContentView], spacing: 36, axis: .horizontal)
-    private lazy var segmentStackVeiw = UIStackView(arrangedSubviews: [shopButton, detailButton, featuresButton], spacing: 40, axis: .horizontal)
-    private lazy var colorsStackVeiw = UIStackView(arrangedSubviews: [brownColorButton, blueColorButton], spacing: 19, axis: .horizontal)
-    private lazy var memoryStackView = UIStackView(arrangedSubviews: [minMemoryButton, maxMemoryButton], spacing: 20, axis: .horizontal)
-    private lazy var colorsAndMemoryStackView = UIStackView(arrangedSubviews: [colorsStackVeiw, memoryStackView], spacing: 60, axis: .horizontal)
-    private lazy var selectColorAndCapacityStackView = UIStackView(arrangedSubviews: [selectColorAndCapacityLabel, colorsAndMemoryStackView], spacing: 15, axis: .vertical)
-    
-    private lazy var generalStackView = UIStackView(arrangedSubviews: [segmentStackVeiw, accessoriesStackVeiw, selectColorAndCapacityStackView, addToCartButton], spacing: 30)
+    lazy var accessoryTitlesStackView = UIStackView(arrangedSubviews: [gpuLabel, cameraLabel, sdLabel, ssdLabel], spacing: 27, axis: .horizontal)
+    lazy var segmentStackVeiw = UIStackView(arrangedSubviews: [shopButton, detailButton, featuresButton], spacing: 67, axis: .horizontal)
+    lazy var memoryStackView = UIStackView(arrangedSubviews: [minMemoryButton, maxMemoryButton], spacing: 15, axis: .horizontal)
     
     //MARK: -viewDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        addTargetsToButtons()
         
         service.getData(phoneModel: .phoneModel).sink { event in
             switch event {
@@ -96,8 +87,8 @@ class DetailViewController: UIViewController {
         cameraLabel.text = data.camera
         sdLabel.text = data.ssd
         ssdLabel.text = data.sd
-        minMemoryButton.setTitle(data.capacity.first, for: .normal)
-        maxMemoryButton.setTitle(data.capacity.last, for: .normal)
+        minMemoryButton.setTitle("\(data.capacity.first!) gb", for: .normal)
+        maxMemoryButton.setTitle("\(data.capacity.last!) gb", for: .normal)
     }
     
     
@@ -109,13 +100,24 @@ class DetailViewController: UIViewController {
         navigationItem.hidesBackButton = true
     }
     
+    //
+    
+    private func addTargetsToButtons() {
+        backButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
+    }
+    
+    @objc private func goBack() {
+        navigationController?.popViewController(animated: true)
+        tabBarController?.tabBar.isHidden = false
+    }
+    
     //MARK: - setupNavigationBar
     
     private func setShadows() {
         productInformationView.layer.shadowColor = UIColor.systemGray.cgColor
-        productInformationView.layer.shadowRadius = 5
-        productInformationView.layer.shadowOpacity = 1
-        productInformationView.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
+        productInformationView.layer.shadowRadius = 8
+        productInformationView.layer.shadowOpacity = 0.7
+        productInformationView.layer.shadowOffset = CGSize(width: 5, height: 5)
     }
     
     //MARK: - setupCarousel
@@ -123,114 +125,6 @@ class DetailViewController: UIViewController {
     private func setupCarousel() {
         carouselView.type = .rotary
         carouselView.dataSource = self
-    }
-    
-
-}
-
-//MARK: - Setup constraints
-
-extension DetailViewController {
-    private func setupConstraints() {
-        
-        //backButton
-        
-        view.addSubview(backButton)
-        
-        backButton.snp.makeConstraints { make in
-            make.left.equalToSuperview().inset(42)
-            make.top.equalToSuperview().inset(79)
-            make.height.width.equalTo(37)
-        }
-        
-        //titleLabel
-        
-        view.addSubview(titleLabel)
-        
-        titleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(backButton)
-            make.left.equalTo(backButton.snp.right).offset(51)
-        }
-        
-        //cartButton
-        
-        view.addSubview(cartButton)
-        
-        cartButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(79)
-            make.right.equalToSuperview().inset(35)
-            make.width.height.equalTo(37)
-        }
-        
-        //carouselView
-        
-        view.addSubview(carouselView)
-        
-        carouselView.snp.makeConstraints { make in
-            make.left.right.equalToSuperview()
-            make.top.equalToSuperview().inset(130)
-            make.height.equalTo(350)
-        }
-        
-        //productInformationView
-        
-        view.addSubview(productInformationView)
-        
-        productInformationView.snp.makeConstraints { make in
-            make.top.equalTo(carouselView.snp.bottom).offset(7)
-            make.left.right.bottom.equalToSuperview()
-        }
-        
-        //favoriteButton
-        
-        productInformationView.addSubview(favoriteButton)
-        
-        favoriteButton.snp.makeConstraints { make in
-            make.width.height.equalTo(35)
-            make.right.equalToSuperview().inset(37)
-            make.top.equalToSuperview().inset(28)
-        }
-        
-        //phoneNameLabel
-        
-        productInformationView.addSubview(phoneNameLabel)
-        
-        phoneNameLabel.snp.makeConstraints { make in
-            make.left.equalToSuperview().inset(38)
-            make.top.equalToSuperview().inset(28)
-        }
-        
-        //fiveStarsImageView
-
-        view.addSubview(fiveStarsImageView)
-
-        fiveStarsImageView.snp.makeConstraints { make in
-            make.top.equalTo(phoneNameLabel.snp.bottom).offset(7)
-            make.left.equalToSuperview().inset(38)
-            make.height.equalTo(23)
-            make.width.equalTo(80)
-        }
-        
-        //generalStackView
-        
-        productInformationView.addSubview(generalStackView)
-        
-        generalStackView.snp.makeConstraints { make in
-            make.height.equalTo(200)
-            make.left.right.equalToSuperview().inset(40)
-            make.bottom.equalToSuperview().inset(58)
-        }
-        
-        //
-        
-        memoryStackView.snp.makeConstraints { make in
-            make.width.equalTo(100)
-        }
-        
-        colorsStackVeiw.snp.makeConstraints { make in
-            make.width.equalTo(50)
-            make.height.equalTo(40)
-        }
     }
 }
 
@@ -243,7 +137,13 @@ extension DetailViewController: iCarouselDataSource {
     }
     
     func carousel(_ carousel: iCarousel, viewForItemAt index: Int, reusing view: UIView?) -> UIView {
-        let cell = UIView(frame: CGRect(x: 0, y: 0, width: 220, height: 330))
+        let cell = UIView(frame: CGRect(x: 0, y: 0, width: 220, height: 300))
+        
+        let image = UIImageView()
+        image.center = cell.center
+        cell.addSubview(image)
+        view?.backgroundColor = .red
+        image.load(url: data.images[index])
         
         cell.backgroundColor = .gray
         cell.layer.borderWidth = 1
