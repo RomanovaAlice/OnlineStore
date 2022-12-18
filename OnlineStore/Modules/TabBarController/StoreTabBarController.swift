@@ -13,8 +13,8 @@ final class StoreTabBarController: UITabBarController {
     
     //viewControllers
     let storeViewController = UINavigationController(rootViewController: StoreViewController())
-    let favoritesViewController = FavoritesVeiwController()
-    let profileViewController = ProfileViewController()
+    let favoritesViewController = UIViewController()
+    let profileViewController = UIViewController()
     let cartViewController = CartViewController()
     
     //other
@@ -43,7 +43,8 @@ final class StoreTabBarController: UITabBarController {
     
     private func setViewControllers() {
         cartViewController.tabBarItem.image = UIImage(systemName: "bag")
-        cartViewController.tabBarItem.badgeValue = "2"
+        cartViewController.tabBarItem.badgeValue = "4"
+        
         favoritesViewController.tabBarItem.image = UIImage(systemName: "heart")
         profileViewController.tabBarItem.image = UIImage(systemName: "person")
         

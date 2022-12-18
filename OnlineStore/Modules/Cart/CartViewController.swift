@@ -55,7 +55,7 @@ final class CartViewController: UIViewController {
         setShadows()
         addTargetsToButtons()
         
-        service.getData(cart: .cart).sink { event in
+        service.getData(requestType: .cart).sink { event in
             switch event {
                 
             case .finished:

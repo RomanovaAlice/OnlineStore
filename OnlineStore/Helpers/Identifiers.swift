@@ -8,6 +8,7 @@
 import Foundation
 
 enum Identifiers: String {
+    
     case selectCategoryCell = "SelectCategoryCell"
     case searchCell = "SearchCell"
     case hotSalesCell = "HotSalesCell"

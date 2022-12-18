@@ -12,9 +12,9 @@ class CartCell: UICollectionViewCell {
     
     //MARK: - Properties
     
-    let counter = CurrentValueSubject<Int, Never>(0)
+    let counter = CurrentValueSubject<Int, Never>(2)
     private var cancelable: Set<AnyCancellable> = []
-    private var currentCount = 0
+    private var currentCount = 2
     
     //labels
     let modelNameLabel = UILabel(font: .systemFont(ofSize: 17, weight: .semibold), textColor: .white)

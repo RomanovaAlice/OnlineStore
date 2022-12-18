@@ -10,29 +10,11 @@ import Foundation
 
 final class NetworkService {
     
-    func getData(store: RequestType) -> AnyPublisher<Store, Error> {
-        let url = URL(string: store.rawValue)
+    func getData<T>(requestType: RequestType) -> AnyPublisher<T, Error> where T: Decodable {
+        let url = URL(string: requestType.rawValue)
         
         return URLSession.shared.dataTaskPublisher(for: url!).map { $0.data }
-            .decode(type: Store.self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
-    
-    func getData(phoneModel: RequestType) -> AnyPublisher<PhoneModel, Error> {
-        let url = URL(string: phoneModel.rawValue)
-        
-        return URLSession.shared.dataTaskPublisher(for: url!).map { $0.data }
-            .decode(type: PhoneModel.self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main)
-            .eraseToAnyPublisher()
-    }
-    
-    func getData(cart: RequestType) -> AnyPublisher<Cart, Error> {
-        let url = URL(string: cart.rawValue)
-        
-        return URLSession.shared.dataTaskPublisher(for: url!).map { $0.data }
-            .decode(type: Cart.self, decoder: JSONDecoder())
+            .decode(type: T.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
     }

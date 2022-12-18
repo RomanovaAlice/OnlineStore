@@ -8,60 +8,53 @@
 import UIKit
 import Combine
 
-final class StoreViewController: UIViewController {
+fileprivate enum Section: Int, CaseIterable {
+    case selectCategory
+    case search
+    case hotSales
+    case bestSeller
     
-    let service = NetworkService()
-    
-    private enum Section: Int, CaseIterable {
-        case selectCategory
-        case search
-        case hotSales
-        case bestSeller
-        
-        func description() -> String {
-            switch self {
+    func description() -> String {
+        switch self {
 
-            case .selectCategory:
-                return " Select category"
-            case .search:
-                return ""
-            case .hotSales:
-                return "Hot sales"
-            case .bestSeller:
-                return "Best Seller"
-            }
-        }
-        
-        func showMore() -> String {
-            switch self {
-                
-            case .selectCategory:
-                return "view all"
-            case .search:
-                return ""
-            case .hotSales:
-                return "see more"
-            case .bestSeller:
-                return "see more"
-            }
+        case .selectCategory:
+            return " Select category"
+        case .search:
+            return ""
+        case .hotSales:
+            return "Hot sales"
+        case .bestSeller:
+            return "Best Seller"
         }
     }
+    
+    func showMore() -> String {
+        switch self {
+            
+        case .selectCategory:
+            return "view all"
+        case .search:
+            return ""
+        case .hotSales:
+            return "see more"
+        case .bestSeller:
+            return "see more"
+        }
+    }
+}
+
+final class StoreViewController: UIViewController {
+    
+    private let viewModel = StoreViewModel()
 
     //MARK: - Properties
     
-    private var cancelable: Set<AnyCancellable> = []
+    private lazy var filterButton = UIBarButtonItem(image: UIImage(named: "funnel"), style: .plain, target: self, action: #selector(presentFilterViewController))
     private var storeCollectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
-    private lazy var filterButton = UIBarButtonItem(image: UIImage(named: "funnel"), style: .plain, target: self, action: #selector(presentFilterViewController))
     
     private let color = CurrentValueSubject<UIColor, Never>.init(UIColor(named: "white")!)
-
-    private var data: Store!
-    private let  selectedCategoryData = SelectedCategoryData()
-    var search: [AnyHashable] = ["search"]
-    
-    var currentIndexPath: IndexPath!
-
+    private var cancelable: Set<AnyCancellable> = []
 
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -69,21 +62,9 @@ final class StoreViewController: UIViewController {
         
         configureNavigationBar()
         
-        service.getData(store: .store).sink { [weak self] result in
-            switch result {
-                
-            case .finished:
-                
-                self?.setupCollectionView()
-                self?.setupDataSource()
-                self?.setupSnapshot()
-                
-            case .failure(let error):
-                print(error)
-            }
-        } receiveValue: { [weak self] data in
-            self?.data = data
-        }.store(in: &cancelable)
+        setupCollectionView()
+        setupDataSource()
+        setupSnapshot()
     }
     
     //MARK: - configureNavigationBar
@@ -93,6 +74,8 @@ final class StoreViewController: UIViewController {
         navigationItem.rightBarButtonItem = filterButton
         filterButton.tintColor = .black
     }
+    
+    //MARK: - @objc presentFilterViewController
     
     @objc private func presentFilterViewController() {
         let vc = FilterViewController()
@@ -129,7 +112,7 @@ final class StoreViewController: UIViewController {
         snapshot.appendSections([.selectCategory, .search, .hotSales, .bestSeller])
         
         snapshot.appendItems(selectedCategoryData.titles, toSection: .selectCategory)
-        snapshot.appendItems(search, toSection: .search)
+        snapshot.appendItems([0], toSection: .search)
         snapshot.appendItems(data.map({ $0.home_store })!, toSection: .hotSales)
         snapshot.appendItems(data.map({ $0.best_seller })!, toSection: .bestSeller)
 
@@ -347,8 +330,7 @@ extension StoreViewController: UICollectionViewDelegate {
         switch section {
             
         case .selectCategory:
-            currentIndexPath = indexPath
-            
+
             color.send(.black)
         case .search:
             print()

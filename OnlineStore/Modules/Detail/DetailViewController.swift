@@ -75,7 +75,7 @@ class DetailViewController: UIViewController {
         setShadows()
         addTargetsToButtons()
         
-        service.getData(phoneModel: .phoneModel).sink { event in
+        service.getData(requestType: .phoneModel).sink { event in
             switch event {
                 
             case .finished:

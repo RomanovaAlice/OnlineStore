@@ -7,11 +7,9 @@
 
 import SnapKit
 
-class FilterViewController: UIViewController {
+final class FilterViewController: UIViewController {
     
     //MARK: - Properties
-    
-    private let contentView = UIView(backgroundColor: .white, radius: 30)
     
     //labels
     private let filterOptionsLabel = UILabel(text: "Filter options", font: .systemFont(ofSize: 17, weight: .semibold))
@@ -22,12 +20,15 @@ class FilterViewController: UIViewController {
     //buttons
     private let doneButton = UIButton(backgroundColor: UIColor(named: "orange"), title: "Done", textColor: .white, radius: 12)
     private let crossButton = UIButton(backgroundColor: .black, titntColor: .white, image: UIImage(systemName: "xmark"), radius: 9)
-    private let modelButton = DropDownButton()
+    private let brandButton = DropDownButton()
     private let priceButton = DropDownButton()
     private let sizeButton = DropDownButton()
     
+    //views
+    private let contentView = UIView(backgroundColor: .white, radius: 30)
+    
     //stack
-    private lazy var stackView = UIStackView(arrangedSubviews: [brandLabel, modelButton, priceLabel, priceButton, sizeLabel, sizeButton], spacing: 8, axis: .vertical)
+    private lazy var stackView = UIStackView(arrangedSubviews: [brandLabel, brandButton, priceLabel, priceButton, sizeLabel, sizeButton], spacing: 8, axis: .vertical)
 
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -35,50 +36,50 @@ class FilterViewController: UIViewController {
 
         view.backgroundColor = .clear
         
-        configureButtons()
-        setShadows()
-        setupButtonTargets()
+        setTitlesToButtons()
+        setShadowsToContentView()
+        addTargetsToButtons()
         
         setupConstraints()
     }
     
-    //MARK: - setShadows
+    //MARK: - setShadowsToContentView
     
-    private func setShadows() {
+    private func setShadowsToContentView() {
         contentView.layer.shadowColor = UIColor.systemGray.cgColor
         contentView.layer.shadowRadius = 5
         contentView.layer.shadowOpacity = 1
         contentView.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
     }
     
-    //MARK: - configureButtons
+    //MARK: - setTitlesToButtons
     
-    private func configureButtons() {
-        modelButton.setTitle(title: "Sumsung")
+    private func setTitlesToButtons() {
+        brandButton.setTitle(title: "Sumsung")
         priceButton.setTitle(title: "$300 - $500")
         sizeButton.setTitle(title: "4.5 to 5.5 inches")
     }
     
-    //MARK: - setupButtonTargets
+    //MARK: - addTargetsToButtons
     
-    private func setupButtonTargets() {
-        modelButton.addTarget(self, action: #selector(modelButtonTapped), for: .touchUpInside)
-        priceButton.addTarget(self, action: #selector(priceButtonTapped), for: .touchUpInside)
-        crossButton.addTarget(self, action: #selector(dismissView), for: .touchUpInside)
-        doneButton.addTarget(self, action: #selector(dismissView), for: .touchUpInside)
+    private func addTargetsToButtons() {
+        brandButton.addTarget(self, action: #selector(showBrands), for: .touchUpInside)
+        priceButton.addTarget(self, action: #selector(showPrice), for: .touchUpInside)
+        crossButton.addTarget(self, action: #selector(dismissViewController), for: .touchUpInside)
+        doneButton.addTarget(self, action: #selector(dismissViewController), for: .touchUpInside)
     }
     
     //MARK: - @objc methods
     
-    @objc private func modelButtonTapped() {
-        modelButton.setDropDownList(dataSource: ["IPhone", "Xiaomi", "Huawey", "Google Pixel", "Honor"])
+    @objc private func showBrands() {
+        brandButton.setDropDownList(dataSource: ["IPhone", "Xiaomi", "Huawey", "Google Pixel", "Honor"])
     }
     
-    @objc private func priceButtonTapped() {
+    @objc private func showPrice() {
         priceButton.setDropDownList(dataSource: ["$500 - $1000", "$500 - $1000", "$1000 - $2000", "$2000 - $5000", "$5000 - $10000"])
     }
     
-    @objc private func dismissView() {
+    @objc private func dismissViewController() {
         dismiss(animated: true)
     }
 }
