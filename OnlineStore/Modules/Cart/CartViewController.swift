@@ -19,6 +19,7 @@ final class CartViewController: UIViewController {
     //MARK: - Properties
     
     private var totalPriceDictionary = [IndexPath : Int]()
+    private var amountOfElementsDictionary = [Int : Int]()
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
     private var cancelable: Set<AnyCancellable> = []
     
@@ -129,16 +130,25 @@ final class CartViewController: UIViewController {
                 cell.buyCounter.sink { newValue in
                     if self.totalPriceDictionary.keys.contains(indexPath) {
                         self.totalPriceDictionary.updateValue(newValue * data.basket[indexPath.row].price, forKey: indexPath)
+                        self.amountOfElementsDictionary.updateValue(newValue, forKey: data.basket[indexPath.row].price)
                     } else {
                         self.totalPriceDictionary[indexPath] = newValue * data.basket[indexPath.row].price
+                        self.amountOfElementsDictionary[data.basket[indexPath.row].price] = newValue
                     }
                     
-                    var summ = 0
+                    var sumOfPrices = 0
+                    var sumOfAmount = 0
+              
                     for i in self.totalPriceDictionary.values {
-                        summ += i
+                        sumOfPrices += i
                     }
                     
-                    self.totalPriceLabel.text = "$\(summ) us"
+                    for i in self.amountOfElementsDictionary.values {
+                        sumOfAmount += i
+                    }
+            
+                    self.totalPriceLabel.text = "$\(sumOfPrices) us"
+                    self.tabBarItem.badgeValue = "\(sumOfAmount)"
                     
                 }.store(in: &self.cancelable)
             }.store(in: &cancelable)
