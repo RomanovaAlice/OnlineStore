@@ -14,10 +14,12 @@ final class StoreViewModel {
     private var cancelable: Set<AnyCancellable> = []
     
     @Published var state: ViewModelState = .none
-    @Published var searchData: Store!
-    @Published var selectCategory: SelectedCategoryData!
+    @Published var searchData: Store = Store.placeholder
+    @Published var selectCategory = SelectedCategoryData()
     
     init() {
+        state = .loading
+        
         service.getData(requestType: .store).sink { event in
             switch event {
                 
@@ -29,7 +31,5 @@ final class StoreViewModel {
         } receiveValue: { data in
             self.searchData = data
         }.store(in: &cancelable)
-
-        selectCategory = SelectedCategoryData()
     }
 }

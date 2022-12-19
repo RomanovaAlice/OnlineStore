@@ -8,11 +8,13 @@
 import UIKit
 import Combine
 
+fileprivate enum Section: Int, CaseIterable {
+    case cart
+}
+
 final class CartViewController: UIViewController {
     
-    private enum Section: Int, CaseIterable {
-        case cart
-    }
+    private let viewModel = CartViewModel()
     
     //MARK: - Properties
     
@@ -40,11 +42,10 @@ final class CartViewController: UIViewController {
     var newValue = 0
     var priceOne = 0
     var priceTwo = 0
-    private let service = NetworkService()
+
     var cartCollectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
     private var cancelable: Set<AnyCancellable> = []
-    private var data: Cart!
     
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -54,21 +55,20 @@ final class CartViewController: UIViewController {
         
         setShadows()
         addTargetsToButtons()
-        
-        service.getData(requestType: .cart).sink { event in
-            switch event {
-                
-            case .finished:
-                self.setupCollectionView()
-                self.setupDataSource()
-                self.setupSnapshot()
-                
-                self.setupConstraints()
-            case .failure(let error):
-                print(error)
-            }
-        } receiveValue: { data in
-            self.data = data
+        bind()
+    }
+    
+    //MARK: - Binding
+    
+    private func bind() {
+        viewModel.$state.sink { state in
+            guard state == .success else { return }
+            
+            self.setupCollectionView()
+            self.setupDataSource()
+            self.setupSnapshot()
+            self.setupConstraints()
+            
         }.store(in: &cancelable)
     }
     
@@ -91,7 +91,7 @@ final class CartViewController: UIViewController {
         cartCollectionView.register(CartCell.self, forCellWithReuseIdentifier: Identifiers.cartCell.rawValue)
     }
     
-    //MARK: - setupCollectionView
+    //MARK: - addTargetsToButtons
     
     private func addTargetsToButtons() {
         backButton.addTarget(self, action: #selector(goBack), for: .touchUpInside)
@@ -110,8 +110,11 @@ final class CartViewController: UIViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
         
         snapshot.appendSections([.cart])
-        snapshot.appendItems(data.map({ $0.basket })!, toSection: .cart)
-
+        
+        viewModel.$searchData.sink { data in
+            snapshot.appendItems(data.basket, toSection: .cart)
+        }.store(in: &cancelable)
+        
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
     
@@ -122,21 +125,23 @@ final class CartViewController: UIViewController {
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.cartCell.rawValue, for: indexPath) as! CartCell
             
-            cell.modelNameLabel.text = self.data.basket[indexPath.item].title
-            cell.phoneImageView.load(url: self.data.basket[indexPath.item].images)
-            cell.priseLabel.text = "$\(String(self.data.basket[indexPath.item].price)).00"
-            
-            cell.counter.sink { newValue in
-                if indexPath.item == 0 {
-                    self.priceOne = self.data.basket[indexPath.item].price * newValue
-                    self.oldValue = newValue
-                } else {
-                    self.priceTwo = self.data.basket[indexPath.item].price * newValue
-                    self.newValue = newValue
-                }
-                self.totalPriceLabel.text = "$\(self.priceOne + self.priceTwo) us"
-                self.tabBarItem.badgeValue = "\(self.oldValue + self.newValue)"
+            viewModel.$searchData.sink { data in
+                cell.modelNameLabel.text = data.basket[indexPath.item].title
+                cell.phoneImageView.load(url: data.basket[indexPath.item].images)
+                cell.priseLabel.text = "$\(String(data.basket[indexPath.item].price)).00"
                 
+                cell.counter.sink { newValue in
+                    if indexPath.item == 0 {
+                        self.priceOne = data.basket[indexPath.item].price * newValue
+                        self.oldValue = newValue
+                    } else {
+                        self.priceTwo = data.basket[indexPath.item].price * newValue
+                        self.newValue = newValue
+                    }
+                    self.totalPriceLabel.text = "$\(self.priceOne + self.priceTwo) us"
+                    self.tabBarItem.badgeValue = "\(self.oldValue + self.newValue)"
+                    
+                }.store(in: &self.cancelable)
             }.store(in: &cancelable)
             
             return cell

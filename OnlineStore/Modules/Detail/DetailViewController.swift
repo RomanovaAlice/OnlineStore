@@ -8,16 +8,16 @@
 import Combine
 import UIKit
 
+fileprivate enum Section: Int, CaseIterable {
+    case detail
+}
+
 class DetailViewController: UIViewController {
     
-    private enum Section: Int, CaseIterable {
-        case detail
-    }
+    private let viewModel = DetailViewModel()
     
     //MARK: - Properties
     
-    private var data: PhoneModel!
-    private let service = NetworkService()
     private var cancelable: Set<AnyCancellable> = []
     var detailCollectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
@@ -74,34 +74,39 @@ class DetailViewController: UIViewController {
         setupNavigationBar()
         setShadows()
         addTargetsToButtons()
+        bind()
         
-        service.getData(requestType: .phoneModel).sink { event in
-            switch event {
-                
-            case .finished:
-                self.setupCollectionView()
-                self.setupDataSource()
-                self.setupSnapshot()
-                
-                self.setData()
-                self.setupConstraints()
-            case .failure(let error):
-                print(error)
-            }
-        } receiveValue: { data in
-            self.data = data
+    }
+    
+    //MARK: - Binding
+    
+    private func bind() {
+        viewModel.$state.sink { state in
+            guard state == .success else { return }
+            
+            self.setupCollectionView()
+            self.setupDataSource()
+            self.setupSnapshot()
+            self.setData()
+            self.setupConstraints()
+            
         }.store(in: &cancelable)
     }
     
+    //MARK: - setData
+    
     private func setData() {
-        phoneNameLabel.text = data.title
-        gpuLabel.text = data.CPU
-        cameraLabel.text = data.camera
-        sdLabel.text = data.ssd
-        ssdLabel.text = data.sd
-        minMemoryButton.setTitle("\(data.capacity.first!) gb", for: .normal)
-        maxMemoryButton.setTitle("\(data.capacity.last!) gb", for: .normal)
-        addToCartButton.setTitle("Add to Cart           $\(data.price).00", for: .normal)
+        
+        viewModel.$searchData.sink { data in
+            self.phoneNameLabel.text = data.title
+            self.gpuLabel.text = data.CPU
+            self.cameraLabel.text = data.camera
+            self.sdLabel.text = data.ssd
+            self.ssdLabel.text = data.sd
+            self.minMemoryButton.setTitle("\(data.capacity.first!) gb", for: .normal)
+            self.maxMemoryButton.setTitle("\(data.capacity.last!) gb", for: .normal)
+            self.addToCartButton.setTitle("Add to Cart           $\(data.price).00", for: .normal)
+        }.store(in: &cancelable)
     }
     
     //MARK: - setupNavigationBar
@@ -266,7 +271,10 @@ class DetailViewController: UIViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
         
         snapshot.appendSections([.detail])
-        snapshot.appendItems(data.map({ $0.images })!, toSection: .detail)
+        
+        viewModel.$searchData.sink { data in
+            snapshot.appendItems(data.images, toSection: .detail)
+        }.store(in: &cancelable)
 
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
@@ -277,9 +285,11 @@ class DetailViewController: UIViewController {
         dataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>(collectionView: detailCollectionView, cellProvider: { [unowned self] collectionView, indexPath, _ in
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.detailCell.rawValue, for: indexPath) as! DetailCell
-
-            cell.imageView.load(url: data.images.first!)
             
+            viewModel.$searchData.sink { data in
+                cell.imageView.load(url: data.images.first!)
+            }.store(in: &cancelable)
+
             return cell
         })
     }

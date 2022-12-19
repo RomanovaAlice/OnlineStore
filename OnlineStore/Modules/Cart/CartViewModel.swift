@@ -12,11 +12,23 @@ final class CartViewModel {
     
     private let service = NetworkService()
     private var cancelable: Set<AnyCancellable> = []
+    @Published var state: ViewModelState = .none
 
-    
-    @Published var basket: [Product] = []
-    @Published var delivery = ""
-    @Published var images: [String] = []
-    @Published var price = 0
-    @Published var title = ""
+    @Published var searchData: Cart = Cart.placeholder
+
+    init() {
+        state = .loading
+        
+        service.getData(requestType: .cart).sink { event in
+            switch event {
+                
+            case .finished:
+                self.state = .success
+            case .failure(_):
+                self.state = .failure
+            }
+        } receiveValue: { data in
+            self.searchData = data
+        }.store(in: &cancelable)
+    }
 }

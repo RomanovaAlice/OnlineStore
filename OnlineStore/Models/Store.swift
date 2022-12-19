@@ -19,6 +19,8 @@ struct Store: Decodable, Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(home_store[0].id)
     }
+    
+    static let placeholder = Store(home_store: [HomeStore(id: 0, is_new: false, title: "", subtitle: "", picture: "", is_buy: false)], best_seller: [BestSeller(id: 0, is_favorites: false, title: "", price_without_discount: 0, discount_price: 0, picture: "")])
 }
 
 struct HomeStore: Decodable, Hashable {

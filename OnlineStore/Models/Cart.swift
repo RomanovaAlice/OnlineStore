@@ -20,6 +20,8 @@ struct Cart: Decodable, Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+    
+    static let placeholder = Cart(basket: [Product(id: 0, images: "", price: 0, title: "")], delivery: "", id: "", total: 0)
 }
 
 struct Product: Decodable, Hashable {

@@ -20,4 +20,6 @@ struct PhoneModel: Decodable {
     let sd: String
     let ssd: String
     let title: String
+    
+    static let placeholder = PhoneModel(CPU: "", camera: "", capacity: [""], color: [""], id: "", images: [""], isFavorites: false, price: 0, rating: 0, sd: "", ssd: "", title: "")
 }

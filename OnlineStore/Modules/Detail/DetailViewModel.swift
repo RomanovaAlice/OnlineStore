@@ -12,15 +12,24 @@ final class DetailViewModel {
     
     private let service = NetworkService()
     private var cancelable: Set<AnyCancellable> = []
-
-    @Published var gpu = ""
-    @Published var camera = ""
-    @Published var capacity: [String] = []
-    @Published var images: [String] = []
-    @Published var isFavorites = false
-    @Published var price = 0
-    @Published var sd = ""
-    @Published var ssd = ""
-    @Published var title = ""
     
+    @Published var state: ViewModelState = .none
+    @Published var searchData: PhoneModel = PhoneModel.placeholder
+
+    init() {
+        state = .loading
+        
+        service.getData(requestType: .phoneModel).sink { event in
+            switch event {
+                
+            case .finished:
+                self.state = .success
+            case .failure(_):
+                self.state = .failure
+            }
+        } receiveValue: { data in
+            self.searchData = data
+        }.store(in: &cancelable)
+
+    }
 }
