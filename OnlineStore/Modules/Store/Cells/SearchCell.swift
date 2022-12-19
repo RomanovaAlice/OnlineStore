@@ -13,15 +13,14 @@ class SearchCell: UICollectionViewCell {
     
     let searchTextField = UITextField(placeholder: "Search")
     let searchView = UIView(backgroundColor: UIColor(named: "white")!, radius: 20)
-    let searchImageView = UIImageView(image: UIImage(systemName: "magnifyingglass"))
+    let searchImageView = UIImageView(image: UIImage(systemName: "magnifyingglass"), tintColor: UIColor(named: "orange"))
     let qrCodeButton = UIButton(backgroundColor: UIColor(named: "orange")!, titntColor: .white, image: UIImage(systemName: "qrcode"), radius: 17)
     
     //MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        searchImageView.tintColor = UIColor(named: "orange")
+
         setupConstraints()
     }
     

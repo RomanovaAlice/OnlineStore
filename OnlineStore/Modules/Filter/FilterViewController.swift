@@ -37,7 +37,7 @@ final class FilterViewController: UIViewController {
         view.backgroundColor = .clear
         
         setTitlesToButtons()
-        setShadowsToContentView()
+        setShadowsForContentView()
         addTargetsToButtons()
         
         setupConstraints()
@@ -45,7 +45,7 @@ final class FilterViewController: UIViewController {
     
     //MARK: - setShadowsToContentView
     
-    private func setShadowsToContentView() {
+    private func setShadowsForContentView() {
         contentView.layer.shadowColor = UIColor.systemGray.cgColor
         contentView.layer.shadowRadius = 5
         contentView.layer.shadowOpacity = 1

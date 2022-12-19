@@ -23,6 +23,5 @@ extension UITextField {
         
         self.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: self.frame.height))
         self.leftViewMode = .always
-        
     }
 }

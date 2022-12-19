@@ -72,10 +72,9 @@ class DetailViewController: UIViewController {
         super.viewDidLoad()
         
         setupNavigationBar()
-        setShadows()
+        setShadowsForProductInformationView()
         addTargetsToButtons()
         bind()
-        
     }
     
     //MARK: - Binding
@@ -127,9 +126,9 @@ class DetailViewController: UIViewController {
         detailCollectionView.register(DetailCell.self, forCellWithReuseIdentifier: Identifiers.detailCell.rawValue)
     }
     
-    //MARK: - setupNavigationBar
+    //MARK: - setShadowsForProductInformationView
     
-    private func setShadows() {
+    private func setShadowsForProductInformationView() {
         productInformationView.layer.shadowColor = UIColor.systemGray.cgColor
         productInformationView.layer.shadowRadius = 8
         productInformationView.layer.shadowOpacity = 0.7

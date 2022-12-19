@@ -20,7 +20,7 @@ class SelectCategoryCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
     
-        setShadows()
+        setShadowsForCircleView()
         setupConstraints()
     }
     
@@ -30,7 +30,7 @@ class SelectCategoryCell: UICollectionViewCell {
     
     //MARK: - Methods
     
-    private func setShadows() {
+    private func setShadowsForCircleView() {
         circleView.layer.shadowColor = UIColor.systemGray2.cgColor
         circleView.layer.shadowRadius = 4
         circleView.layer.shadowOpacity = 0.1

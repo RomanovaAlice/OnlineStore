@@ -35,7 +35,7 @@ class BestSellerCell: UICollectionViewCell {
         
         addTargetsToButtons()
         setupSelfAppearens()
-        setShadows()
+        setShadowsForHeartView()
         setupConstraints()
     }
     
@@ -51,7 +51,7 @@ class BestSellerCell: UICollectionViewCell {
         self.clipsToBounds = true
     }
     
-    private func setShadows() {
+    private func setShadowsForHeartView() {
         heartView.layer.shadowColor = UIColor.gray.cgColor
         heartView.layer.shadowRadius = 4
         heartView.layer.shadowOpacity = 0.2

@@ -52,8 +52,7 @@ final class StoreViewController: UIViewController {
     private lazy var filterButton = UIBarButtonItem(image: UIImage(named: "funnel"), style: .plain, target: self, action: #selector(presentFilterViewController))
     private var storeCollectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
-    private var currentIndexPath: IndexPath!
-    private let color = CurrentValueSubject<Void, Never>.init(())
+    private var currentIndexPath = CurrentValueSubject<IndexPath, Never>.init(IndexPath(row: 0, section: 0))
     private var cancelable: Set<AnyCancellable> = []
 
     //MARK: - viewDidLoad
@@ -156,9 +155,8 @@ final class StoreViewController: UIViewController {
                     cell.titleLabel.text = data.titles[indexPath.item]
                 }.store(in: &cancelable)
                 
-                self.color.sink { _ in
-              
-                    if indexPath == self.currentIndexPath {
+                self.currentIndexPath.sink { currentIndexPath in
+                    if indexPath == currentIndexPath {
                         cell.setSelectedState()
                     } else {
                         cell.setUnselectedState()
@@ -348,8 +346,7 @@ extension StoreViewController: UICollectionViewDelegate {
         switch indexPath.section {
             
         case 0:
-            currentIndexPath = indexPath
-            color.send()
+            currentIndexPath.send(indexPath)
         case 3:
             navigationController?.pushViewController(DetailViewController(), animated: true)
         default:

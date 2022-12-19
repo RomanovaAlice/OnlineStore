@@ -12,13 +12,13 @@ class CartCell: UICollectionViewCell {
     
     //MARK: - Properties
     
-    let counter = CurrentValueSubject<Int, Never>(2)
+    let buyCounter = CurrentValueSubject<Int, Never>(2)
     private var cancelable: Set<AnyCancellable> = []
     private var currentCount = 2
     
     //labels
     let modelNameLabel = UILabel(font: .systemFont(ofSize: 17, weight: .semibold), textColor: .white)
-    let countLabel = UILabel(font: .systemFont(ofSize: 16, weight: .semibold), textColor: .white)
+    private let countLabel = UILabel(font: .systemFont(ofSize: 16, weight: .semibold), textColor: .white)
     let priseLabel = UILabel(font: .systemFont(ofSize: 17, weight: .semibold), textColor: UIColor(named: "orange"))
     
     //buttons
@@ -38,7 +38,7 @@ class CartCell: UICollectionViewCell {
         super.init(frame: frame)
     
         addTargetsToButtons()
-        bindCountLabel()
+        updateCountLabel()
         setupConstraints()
     }
     
@@ -48,8 +48,8 @@ class CartCell: UICollectionViewCell {
     
     //MARK: - Methods
     
-    private func bindCountLabel() {
-        counter.sink { newValue in
+    private func updateCountLabel() {
+        buyCounter.sink { newValue in
             self.countLabel.text = "\(newValue)"
         }.store(in: &cancelable)
     }
@@ -61,12 +61,12 @@ class CartCell: UICollectionViewCell {
     
     @objc private func plus() {
         currentCount += 1
-        counter.send(currentCount)
+        buyCounter.send(currentCount)
     }
     
     @objc private func minus() {
         currentCount -= 1
-        counter.send(currentCount)
+        buyCounter.send(currentCount)
     }
 }
 

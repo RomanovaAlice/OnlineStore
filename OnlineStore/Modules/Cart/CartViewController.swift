@@ -18,6 +18,10 @@ final class CartViewController: UIViewController {
     
     //MARK: - Properties
     
+    private var totalPriceDictionary = [IndexPath : Int]()
+    private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
+    private var cancelable: Set<AnyCancellable> = []
+    
     //labels
     let titleLabel = UILabel(text: "My Cart", font: .systemFont(ofSize: 40, weight: .semibold))
     let totalLabel = UILabel(text: "Total", font: .systemFont(ofSize: 14, weight: .light), textColor: .white)
@@ -36,16 +40,7 @@ final class CartViewController: UIViewController {
     let topSeparatorView = UIView(backgroundColor: .gray)
     let bottomSeparatorView = UIView(backgroundColor: .gray)
     
-    //other
-    var currentIndexPath = 0
-    var oldValue = 0
-    var newValue = 0
-    var priceOne = 0
-    var priceTwo = 0
-
     var cartCollectionView: UICollectionView!
-    private var dataSource: UICollectionViewDiffableDataSource<Section, AnyHashable>!
-    private var cancelable: Set<AnyCancellable> = []
     
     //MARK: - viewDidLoad
     override func viewDidLoad() {
@@ -53,7 +48,7 @@ final class CartViewController: UIViewController {
         
         view.backgroundColor = UIColor(named: "gray")
         
-        setShadows()
+        setShadowsForContentView()
         addTargetsToButtons()
         bind()
     }
@@ -72,23 +67,23 @@ final class CartViewController: UIViewController {
         }.store(in: &cancelable)
     }
     
-    //MARK: - setShadows
-    
-    private func setShadows() {
-        contentView.layer.shadowColor = UIColor.gray.cgColor
-        contentView.layer.shadowRadius = 5
-        contentView.layer.shadowOpacity = 1
-        contentView.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
-    }
-    
     //MARK: - setupCollectionView
     
     private func setupCollectionView() {
         cartCollectionView = UICollectionView(frame: view.bounds, collectionViewLayout: createCompositionalLayout())
         cartCollectionView.backgroundColor = .clear
         cartCollectionView.showsVerticalScrollIndicator = false
-
+        
         cartCollectionView.register(CartCell.self, forCellWithReuseIdentifier: Identifiers.cartCell.rawValue)
+    }
+    
+    //MARK: - setShadowsForContentView
+    
+    private func setShadowsForContentView() {
+        contentView.layer.shadowColor = UIColor.gray.cgColor
+        contentView.layer.shadowRadius = 5
+        contentView.layer.shadowOpacity = 1
+        contentView.layer.shadowOffset = CGSize(width: 2.5, height: 2.5)
     }
     
     //MARK: - addTargetsToButtons
@@ -105,7 +100,7 @@ final class CartViewController: UIViewController {
     }
     
     //MARK: - setupSnapshot
-
+    
     private func setupSnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, AnyHashable>()
         
@@ -119,27 +114,31 @@ final class CartViewController: UIViewController {
     }
     
     //MARK: - setupDataSource
-
+    
     private func setupDataSource() {
         dataSource = UICollectionViewDiffableDataSource<Section, AnyHashable>(collectionView: cartCollectionView, cellProvider: { [unowned self] collectionView, indexPath, _ in
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: Identifiers.cartCell.rawValue, for: indexPath) as! CartCell
             
             viewModel.$searchData.sink { data in
+                
                 cell.modelNameLabel.text = data.basket[indexPath.item].title
                 cell.phoneImageView.load(url: data.basket[indexPath.item].images)
                 cell.priseLabel.text = "$\(String(data.basket[indexPath.item].price)).00"
                 
-                cell.counter.sink { newValue in
-                    if indexPath.item == 0 {
-                        self.priceOne = data.basket[indexPath.item].price * newValue
-                        self.oldValue = newValue
+                cell.buyCounter.sink { newValue in
+                    if self.totalPriceDictionary.keys.contains(indexPath) {
+                        self.totalPriceDictionary.updateValue(newValue * data.basket[indexPath.row].price, forKey: indexPath)
                     } else {
-                        self.priceTwo = data.basket[indexPath.item].price * newValue
-                        self.newValue = newValue
+                        self.totalPriceDictionary[indexPath] = newValue * data.basket[indexPath.row].price
                     }
-                    self.totalPriceLabel.text = "$\(self.priceOne + self.priceTwo) us"
-                    self.tabBarItem.badgeValue = "\(self.oldValue + self.newValue)"
+                    
+                    var summ = 0
+                    for i in self.totalPriceDictionary.values {
+                        summ += i
+                    }
+                    
+                    self.totalPriceLabel.text = "$\(summ) us"
                     
                 }.store(in: &self.cancelable)
             }.store(in: &cancelable)
