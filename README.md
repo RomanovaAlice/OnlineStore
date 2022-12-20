@@ -1,6 +1,6 @@
 # OnlineStore
 
-Ссылка на видео - https://github.com/RomanovaAlice/OnlineStore/blob/main/Video/video.mov
+Ссылка на видео использования - https://github.com/RomanovaAlice/OnlineStore/blob/main/Video/video.mov
 
 # Технологии 
 
